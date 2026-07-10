@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+.env
+mongodb/
+My_project/mongodb/
+*.log
+.vscode/
+.DS_Store
+*.lock

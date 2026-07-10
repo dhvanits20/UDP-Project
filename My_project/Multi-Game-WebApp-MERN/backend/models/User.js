@@ -1,0 +1,18 @@
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['user', 'developer', 'admin'], default: 'user' },
+  coins: { type: Number, default: 0 },
+  otp: { type: String },
+  otpExpiresAt: { type: Date },
+  isVerified: { type: Boolean, default: false },
+  // Developer specific fields
+  developerStatus: { type: String, enum: ['none', 'pending', 'approved', 'rejected'], default: 'none' },
+  portfolioUrl: { type: String },
+  experience: { type: String }
+}, { timestamps: true });
+
+module.exports = mongoose.model('User', userSchema);
