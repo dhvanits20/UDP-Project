@@ -1,34 +1,38 @@
 const Game = require('../models/Game');
+const Category = require('../models/Category');
 
-// @desc    Get all active games
-// @route   GET /api/games
-// @access  Public
+// Get all games
 const getGames = async (req, res) => {
   try {
-    const games = await Game.find({ isActive: true }).populate('developerId', 'name');
-    res.status(200).json(games);
+    const games = await Game.find({ status: 'public' }).populate('category_id', 'name slug');
+    res.json(games);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
-// @desc    Get single game
-// @route   GET /api/games/:id
-// @access  Public
+// Get single game by ID
 const getGameById = async (req, res) => {
   try {
-    const game = await Game.findById(req.params.id).populate('developerId', 'name');
+    const game = await Game.findById(req.params.id).populate('category_id', 'name slug');
     if (game) {
-      res.status(200).json(game);
+      res.json(game);
     } else {
       res.status(404).json({ message: 'Game not found' });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
-module.exports = {
-  getGames,
-  getGameById
+// Get categories
+const getCategories = async (req, res) => {
+  try {
+    const categories = await Category.find({});
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
 };
+
+module.exports = { getGames, getGameById, getCategories };

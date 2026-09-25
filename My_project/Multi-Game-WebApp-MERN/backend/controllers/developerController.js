@@ -1,64 +1,50 @@
+const GameSubmission = require('../models/GameSubmission');
 const Game = require('../models/Game');
 const User = require('../models/User');
 
-// @desc    Submit a new game request
-// @route   POST /api/developer/games
-// @access  Private/Developer
+// Get Developer Dashboard
+const getDeveloperDashboard = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const myGames = await Game.find({ developer_id: req.user._id });
+    const mySubmissions = await GameSubmission.find({ developer_email: user.email }); // Simplified match
+    
+    const totalGames = myGames.length;
+    const pendingSubmissions = mySubmissions.filter(s => s.status === 'pending').length;
+    
+    res.json({
+      user,
+      totalGames,
+      totalPlays: 0,
+      totalReviews: 0,
+      pendingSubmissions,
+      myGames,
+      mySubmissions
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// Submit a game
 const submitGame = async (req, res) => {
   try {
-    const { title, description, playUrl, thumbnailUrl } = req.body;
-
-    const game = await Game.create({
+    const { title, category_id, description, image_url, game_file, developer_name, developer_email } = req.body;
+    
+    const submission = await GameSubmission.create({
       title,
+      category_id,
       description,
-      playUrl,
-      thumbnailUrl,
-      developerId: req.user.id,
-      isActive: false // Requires admin approval
+      image_url,
+      game_file,
+      developer_name,
+      developer_email
     });
 
-    res.status(201).json(game);
+    res.status(201).json(submission);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
-// @desc    Get developer's own games
-// @route   GET /api/developer/games
-// @access  Private/Developer
-const getMyGames = async (req, res) => {
-  try {
-    const games = await Game.find({ developerId: req.user.id });
-    res.status(200).json(games);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// @desc    Apply to become a developer
-// @route   POST /api/developer/apply
-// @access  Private
-const applyDeveloper = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    
-    if (user.developerStatus === 'pending' || user.developerStatus === 'approved') {
-      return res.status(400).json({ message: 'Application already submitted or approved' });
-    }
-
-    user.developerStatus = 'pending';
-    user.portfolioUrl = req.body.portfolioUrl;
-    user.experience = req.body.experience;
-    await user.save();
-
-    res.status(200).json({ message: 'Application submitted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-module.exports = {
-  submitGame,
-  getMyGames,
-  applyDeveloper
-};
+module.exports = { submitGame, getDeveloperDashboard };

@@ -1,0 +1,5 @@
+$kind: http-request
+description: Fetch a specific student by ID
+url: http://localhost:3000/api/students/1
+method: GET
+order: 2000

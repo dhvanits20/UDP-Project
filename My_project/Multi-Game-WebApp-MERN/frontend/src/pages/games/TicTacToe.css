@@ -1,0 +1,36 @@
+.tic-tac-toe-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+.game-card {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #b01ba5;
+}
+.cell-btn {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #25093a;
+    border: 2px solid #b01ba5;
+    border-radius: 10px;
+    font-size: 3rem;
+    color: #fff;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cell-btn:hover:not(:disabled) {
+    background: #3a1158;
+    transform: scale(1.02);
+}
+.cell-btn:disabled {
+    cursor: default;
+}
+.cell-btn.x { color: #00ffff; text-shadow: 0 0 10px #00ffff; }
+.cell-btn.o { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
+.cell-btn.winner { background: #b01ba5; }
+
+.gap-3 { gap: 1rem; }
+.gap-2 { gap: 0.5rem; }
