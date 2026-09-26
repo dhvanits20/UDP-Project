@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import './Dashboard.css';
 
 const AdminDashboard = () => {
@@ -19,6 +19,7 @@ const AdminDashboard = () => {
   });
   const [recentGames, setRecentGames] = useState([]);
   const [topScores, setTopScores] = useState([]);
+  const [pdfGenerating, setPdfGenerating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,36 +67,66 @@ const AdminDashboard = () => {
   };
 
   const exportPDF = () => {
-    const doc = new jsPDF();
-    doc.text("ENDGAME Pro Admin - Statistical Report", 14, 15);
-    
-    doc.autoTable({
-      startY: 25,
-      head: [['Metric', 'Value']],
-      body: [
-        ['Total Games', stats.totalGames],
-        ['Total Players', stats.totalPlayers],
-        ['Total Developers', stats.totalDevelopers],
-        ['Pending Submissions', stats.pendingSubmissions],
-        ['Net Revenue', `$${stats.totalRevenue}`],
-      ],
-    });
+    try {
+      setPdfGenerating(true);
+      const doc = new jsPDF();
 
-    if (recentGames.length > 0) {
-      doc.text("Recently Added Games", 14, doc.lastAutoTable.finalY + 15);
-      doc.autoTable({
-        startY: doc.lastAutoTable.finalY + 20,
-        head: [['Title', 'Category', 'Status', 'Date']],
-        body: recentGames.map(game => [
-          game.title, 
-          game.category_id?.name || 'Uncategorized', 
-          game.status === 'public' ? 'Active' : 'Inactive',
-          new Date(game.createdAt).toLocaleDateString()
-        ]),
+      // Title & Header Banner
+      doc.setFillColor(28, 8, 46);
+      doc.rect(0, 0, 210, 32, 'F');
+      
+      doc.setFontSize(20);
+      doc.setTextColor(255, 255, 255);
+      doc.text("ENDGAME Pro Admin - Statistical Report", 14, 20);
+
+      doc.setFontSize(10);
+      doc.setTextColor(200, 200, 200);
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 27);
+      
+      // Core Metrics Table
+      autoTable(doc, {
+        startY: 40,
+        theme: 'striped',
+        headStyles: { fillColor: [176, 27, 165], textColor: [255, 255, 255], fontStyle: 'bold' },
+        head: [['System Metric', 'Current Value']],
+        body: [
+          ['Total Catalog Games', String(stats.totalGames)],
+          ['Registered Players', String(stats.totalPlayers)],
+          ['Verified Developers', String(stats.totalDevelopers)],
+          ['Pending Game Submissions', String(stats.pendingSubmissions)],
+          ['Platform Net Profit', `$${Number(stats.totalRevenue).toLocaleString()}`],
+        ],
       });
-    }
 
-    doc.save("Endgame_Report.pdf");
+      const nextY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 15 : 110;
+
+      // Recent Games Table
+      if (recentGames.length > 0) {
+        doc.setFontSize(13);
+        doc.setTextColor(28, 8, 46);
+        doc.text("Recently Added Games", 14, nextY);
+
+        autoTable(doc, {
+          startY: nextY + 5,
+          theme: 'grid',
+          headStyles: { fillColor: [119, 22, 128], textColor: [255, 255, 255], fontStyle: 'bold' },
+          head: [['Title', 'Category', 'Status', 'Date Added']],
+          body: recentGames.map(game => [
+            game.title || 'Untitled', 
+            game.category_id?.name || 'Uncategorized', 
+            game.status === 'public' ? 'Active' : 'Inactive',
+            new Date(game.createdAt).toLocaleDateString()
+          ]),
+        });
+      }
+
+      doc.save(`Endgame_Report_${new Date().toISOString().slice(0, 10)}.pdf`);
+    } catch (err) {
+      console.error("PDF Export Error:", err);
+      alert("Failed to export PDF: " + err.message);
+    } finally {
+      setPdfGenerating(false);
+    }
   };
 
   if (!userData) {
