@@ -8,7 +8,7 @@ const Review = require('../models/Review');
 const getAdminDashboard = async (req, res) => {
   try {
     const totalGames = await Game.countDocuments();
-    const totalPlayers = await User.countDocuments({ role: 'user' });
+    const totalPlayers = await User.countDocuments({ role: { $in: ['player', 'user'] } });
     const totalDevelopers = await User.countDocuments({ role: 'developer' });
     const pendingSubmissions = await GameSubmission.countDocuments({ status: 'pending' });
     
@@ -17,7 +17,7 @@ const getAdminDashboard = async (req, res) => {
     const grossRevenue = Math.round(totalRevenue * 1.3);
     const totalLoss = grossRevenue - totalRevenue;
 
-    const recentGames = await Game.find().sort({ created_at: -1 }).limit(5);
+    const recentGames = await Game.find().populate('category_id', 'name').sort({ createdAt: -1 }).limit(5);
     const topScores = await Score.find().populate('user_id', 'name').populate('game_id', 'title').sort({ score: -1 }).limit(10);
 
     res.json({
