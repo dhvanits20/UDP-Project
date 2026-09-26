@@ -8,3 +8,7 @@ My_project/mongodb/
 .vscode/
 .DS_Store
 *.lock
+uploads/*
+!uploads/.gitkeep
+My_project/Multi-Game-WebApp-MERN/backend/uploads/*
+!My_project/Multi-Game-WebApp-MERN/backend/uploads/.gitkeep

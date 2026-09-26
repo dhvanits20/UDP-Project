@@ -153,6 +153,7 @@ const AdminRequests = () => {
                   <tr>
                     <th>Game Title</th>
                     <th>Developer</th>
+                    <th>Package / ZIP</th>
                     <th>Status</th>
                     <th>Date</th>
                     <th style={{ textAlign: 'right' }}>Actions</th>
@@ -166,6 +167,23 @@ const AdminRequests = () => {
                         <td>
                           <div style={{ fontWeight: 600, color: '#fff' }}>{req.developer_name}</div>
                           <div style={{ fontSize: '12px', color: '#94a3b8' }}>{req.developer_email}</div>
+                        </td>
+                        <td>
+                          {req.game_file ? (
+                            <a 
+                              href={req.game_file.startsWith('http') ? req.game_file : `http://localhost:5000${req.game_file}`}
+                              download
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="dash-btn-secondary"
+                              style={{ padding: '6px 12px', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#38bdf8', textDecoration: 'none' }}
+                            >
+                              <span>📦</span>
+                              <span>Download ZIP</span>
+                            </a>
+                          ) : (
+                            <span style={{ color: '#64748b', fontSize: '12px' }}>No file attached</span>
+                          )}
                         </td>
                         <td>
                           <span className={`dash-badge ${req.status === 'approved' ? 'dash-badge-success' : req.status === 'pending' ? 'dash-badge-warning' : 'dash-badge-danger'}`}>
@@ -188,7 +206,7 @@ const AdminRequests = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>No pending requests.</td>
+                      <td colSpan="6" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>No pending requests.</td>
                     </tr>
                   )}
                 </tbody>

@@ -15,12 +15,30 @@ const SubmitGame = () => {
     developer_name: '',
     developer_email: ''
   });
+  const [zipFile, setZipFile] = useState(null);
+  const [coverImageFile, setCoverImageFile] = useState(null);
+  const [useZipUrl, setUseZipUrl] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Auto-fill logged-in developer info
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const u = JSON.parse(storedUser);
+        setFormData(prev => ({
+          ...prev,
+          developer_name: u.name || '',
+          developer_email: u.email || ''
+        }));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
     const fetchCategories = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/games/categories');
@@ -46,12 +64,44 @@ const SubmitGame = () => {
     setError(null);
     setSuccess(false);
 
+    if (!zipFile && !formData.game_file) {
+      setError('Please choose a game ZIP file (.zip, .rar, .7z) or provide a game package URL.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
-      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const submitData = new FormData();
+      submitData.append('title', formData.title);
+      submitData.append('category_id', formData.category_id);
+      submitData.append('description', formData.description);
+      submitData.append('developer_name', formData.developer_name);
+      submitData.append('developer_email', formData.developer_email);
+
+      if (coverImageFile) {
+        submitData.append('image_file', coverImageFile);
+      } else {
+        submitData.append('image_url', formData.image_url || '/assets/img/games/1.jpg');
+      }
+
+      if (zipFile) {
+        submitData.append('game_file', zipFile);
+      } else if (formData.game_file) {
+        submitData.append('game_file', formData.game_file);
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      };
       
-      await axios.post('http://localhost:5000/api/developer/submit-game', formData, config);
+      await axios.post('http://localhost:5000/api/developer/submit-game', submitData, config);
       setSuccess(true);
+      setZipFile(null);
+      setCoverImageFile(null);
       setFormData({
         title: '',
         category_id: categories.length > 0 ? categories[0]._id : '',
@@ -99,7 +149,7 @@ const SubmitGame = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>
-                  Provide direct public URLs or hosted iframe embed links. Once approved by our moderation team, your game goes live instantly.
+                  Submit your complete game details, cover image, and game ZIP file. Once approved by our moderation team, your game goes live instantly!
                 </span>
               </div>
 
@@ -176,31 +226,145 @@ const SubmitGame = () => {
                     />
                   </div>
 
-                  {/* Cover Image URL */}
+                  {/* Cover Image Upload & URL */}
                   <div className="game-form-group full-width">
-                    <label>Cover Image URL <span>*</span></label>
-                    <input 
-                      type="url" 
-                      className="game-form-input" 
-                      placeholder="https://example.com/images/banner.jpg" 
-                      name="image_url" 
-                      required 
-                      value={formData.image_url} 
-                      onChange={handleChange} 
-                    />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <label>Cover Image <span>*</span></label>
+                      <span style={{ fontSize: '12px', color: '#94a3b8' }}>JPG, PNG or WebP</span>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: coverImageFile ? '1fr auto' : '1fr', gap: '10px' }}>
+                      {coverImageFile ? (
+                        <div className="zip-file-selected" style={{ padding: '10px 16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontSize: '20px' }}>🖼️</span>
+                            <span style={{ color: '#fff', fontSize: '13px', fontWeight: 600 }}>{coverImageFile.name}</span>
+                          </div>
+                          <button type="button" onClick={() => setCoverImageFile(null)} className="dash-btn-secondary" style={{ padding: '4px 10px', fontSize: '11px' }}>
+                            Remove
+                          </button>
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                          <label className="dash-btn-secondary" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', whiteSpace: 'nowrap' }}>
+                            <svg style={{ width: '18px', height: '18px', color: '#d946ef' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>Browse Image</span>
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              style={{ display: 'none' }} 
+                              onChange={(e) => {
+                                if (e.target.files && e.target.files[0]) {
+                                  setCoverImageFile(e.target.files[0]);
+                                }
+                              }} 
+                            />
+                          </label>
+                          <input 
+                            type="text" 
+                            className="game-form-input" 
+                            placeholder="Or enter image URL: https://example.com/cover.jpg" 
+                            name="image_url" 
+                            value={formData.image_url} 
+                            onChange={handleChange} 
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Game File or Iframe URL */}
+                  {/* Game ZIP File Upload */}
                   <div className="game-form-group full-width">
-                    <label>Game File / Iframe Playable URL <span>*</span></label>
-                    <input 
-                      type="url" 
-                      className="game-form-input" 
-                      placeholder="https://itch.io/embed/12345 or direct html5 URL" 
-                      name="game_file" 
-                      value={formData.game_file} 
-                      onChange={handleChange} 
-                    />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <label>Game File (.zip) <span>*</span></label>
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          setUseZipUrl(!useZipUrl);
+                          setZipFile(null);
+                        }} 
+                        style={{ background: 'none', border: 'none', color: '#c084fc', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline' }}
+                      >
+                        {useZipUrl ? '← Upload .ZIP file instead' : 'Have a direct cloud / ZIP link?'}
+                      </button>
+                    </div>
+
+                    {useZipUrl ? (
+                      <input 
+                        type="text" 
+                        className="game-form-input" 
+                        placeholder="https://example.com/games/my-game-build.zip" 
+                        name="game_file" 
+                        value={formData.game_file} 
+                        onChange={handleChange} 
+                      />
+                    ) : zipFile ? (
+                      <div className="zip-file-selected">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                          <span className="zip-file-icon">📦</span>
+                          <div>
+                            <div style={{ color: '#fff', fontWeight: 700, fontSize: '15px' }}>{zipFile.name}</div>
+                            <div style={{ color: '#34d399', fontSize: '12px', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <span>✓ Ready to upload</span>
+                              <span>•</span>
+                              <span>{(zipFile.size / (1024 * 1024)).toFixed(2)} MB</span>
+                            </div>
+                          </div>
+                        </div>
+                        <button 
+                          type="button" 
+                          onClick={() => setZipFile(null)} 
+                          className="dash-btn-secondary" 
+                          style={{ padding: '6px 14px', fontSize: '12px' }}
+                        >
+                          Change File
+                        </button>
+                      </div>
+                    ) : (
+                      <div 
+                        className="zip-dropzone" 
+                        onClick={() => document.getElementById('gameZipInput').click()}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                            setZipFile(e.dataTransfer.files[0]);
+                          }
+                        }}
+                      >
+                        <input 
+                          type="file" 
+                          id="gameZipInput" 
+                          accept=".zip,.rar,.7z" 
+                          style={{ display: 'none' }} 
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setZipFile(e.target.files[0]);
+                            }
+                          }} 
+                        />
+                        <div className="zip-dropzone-icon">
+                          <svg style={{ width: '32px', height: '32px', color: '#d946ef' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                        <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '15px' }}>
+                          Choose Game ZIP File or Drag & Drop
+                        </div>
+                        <div style={{ color: '#94a3b8', fontSize: '12px', marginTop: '6px' }}>
+                          Supported archives: <strong style={{ color: '#e2e8f0' }}>.ZIP, .RAR, .7Z</strong> (Max 150MB)
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="game-form-note">
+                      <span style={{ fontSize: '16px' }}>💡</span>
+                      <span>
+                        <strong>Note:</strong> We support both web games (HTML5/JS) and native desktop games (.exe). If it's a web game, ensure your ZIP contains an <code>index.html</code>.
+                      </span>
+                    </div>
                   </div>
 
                   {/* Description */}
@@ -231,7 +395,7 @@ const SubmitGame = () => {
                       {loading ? (
                         <>
                           <div style={{ width: '18px', height: '18px', border: '2px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
-                          <span>Submitting Game...</span>
+                          <span>Uploading & Submitting...</span>
                         </>
                       ) : (
                         <>

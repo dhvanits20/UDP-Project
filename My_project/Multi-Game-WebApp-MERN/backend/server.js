@@ -11,11 +11,16 @@ connectDB();
 
 const app = express();
 
+const path = require('path');
+
 // Body parser
 app.use(express.json());
 
 // Enable CORS
 app.use(cors());
+
+// Serve static uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const authRoutes = require('./routes/authRoutes');
 const gameRoutes = require('./routes/gameRoutes');
