@@ -51,17 +51,24 @@ const getUserReviews = async (req, res) => {
 // Get User Dashboard Data
 const getUserDashboard = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'User not found. Please log in again.' });
+    }
     const user = await User.findById(req.user._id);
-    const scores = await Score.find({ user_id: req.user._id }).populate('game_id', 'title').sort({ created_at: -1 });
-    const reviews = await Review.find({ user_id: req.user._id }).populate('game_id', 'title').sort({ created_at: -1 });
+    if (!user) {
+      return res.status(401).json({ message: 'User profile not found. Please log in again.' });
+    }
+    const scores = await Score.find({ user_id: req.user._id }).populate('game_id', 'title').sort({ createdAt: -1 });
+    const reviews = await Review.find({ user_id: req.user._id }).populate('game_id', 'title').sort({ createdAt: -1 });
     
     res.json({
       user,
-      scores,
-      reviews
+      scores: scores || [],
+      reviews: reviews || []
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    console.error('getUserDashboard error:', error);
+    res.status(500).json({ message: 'Server Error: ' + error.message });
   }
 };
 

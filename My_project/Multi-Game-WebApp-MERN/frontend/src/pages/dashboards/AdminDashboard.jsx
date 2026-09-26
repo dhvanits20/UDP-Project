@@ -20,6 +20,8 @@ const AdminDashboard = () => {
   const [recentGames, setRecentGames] = useState([]);
   const [topScores, setTopScores] = useState([]);
   const [pdfGenerating, setPdfGenerating] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,28 +33,40 @@ const AdminDashboard = () => {
       }
       
       try {
+        setLoading(true);
+        setError(null);
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const response = await axios.get('http://localhost:5000/api/admin/dashboard', config);
         
-        setUserData(response.data.user);
-        setStats({
-          totalGames: response.data.totalGames || 0,
-          totalPlayers: response.data.totalPlayers || 0,
-          totalDevelopers: response.data.totalDevelopers || 0,
-          pendingSubmissions: response.data.pendingSubmissions || 0,
-          pendingDevs: response.data.pendingDevs || 0,
-          totalRevenue: response.data.totalRevenue || 0,
-          grossRevenue: response.data.grossRevenue || 0,
-          totalLoss: response.data.totalLoss || 0,
-        });
-        setRecentGames(response.data.recentGames || []);
-        setTopScores(response.data.topScores || []);
-      } catch (error) {
-        console.error('Error fetching admin dashboard data', error);
-        if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/login');
+        if (response.data && response.data.user) {
+          setUserData(response.data.user);
+          setStats({
+            totalGames: response.data.totalGames || 0,
+            totalPlayers: response.data.totalPlayers || 0,
+            totalDevelopers: response.data.totalDevelopers || 0,
+            pendingSubmissions: response.data.pendingSubmissions || 0,
+            pendingDevs: response.data.pendingDevs || 0,
+            totalRevenue: response.data.totalRevenue || 0,
+            grossRevenue: response.data.grossRevenue || 0,
+            totalLoss: response.data.totalLoss || 0,
+          });
+          setRecentGames(response.data.recentGames || []);
+          setTopScores(response.data.topScores || []);
+        } else {
+          throw new Error('Admin data not found');
         }
+      } catch (err) {
+        console.error('Error fetching admin dashboard data', err);
+        const status = err.response?.status;
+        if (status === 401 || status === 403 || status === 404) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          navigate('/login');
+          return;
+        }
+        setError(err.response?.data?.message || err.message || 'Failed to load admin data');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -129,7 +143,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (!userData) {
+  if (loading) {
     return (
       <div className="dashboard-wrapper" style={{ alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
@@ -137,6 +151,28 @@ const AdminDashboard = () => {
           <p style={{ color: '#fff', fontSize: '16px', fontWeight: 600 }}>Loading Admin Suite...</p>
         </div>
         <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  if (error || !userData) {
+    return (
+      <div className="dashboard-wrapper" style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.04)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', maxWidth: '440px' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔒</div>
+          <h3 style={{ color: '#fff', marginBottom: '10px' }}>Admin Access Required</h3>
+          <p style={{ color: '#94a3b8', marginBottom: '24px', fontSize: '14px' }}>
+            {error || 'Your admin session is expired or unauthorized. Please log in with admin credentials.'}
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <button onClick={handleLogout} className="dash-btn-primary">
+              Log In as Admin
+            </button>
+            <Link to="/" className="dash-btn-secondary">
+              Return Home
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }

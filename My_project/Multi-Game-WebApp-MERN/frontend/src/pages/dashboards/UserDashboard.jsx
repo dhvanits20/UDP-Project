@@ -9,6 +9,8 @@ const UserDashboard = () => {
   const [userData, setUserData] = useState(null);
   const [scores, setScores] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,18 +22,30 @@ const UserDashboard = () => {
       }
       
       try {
+        setLoading(true);
+        setError(null);
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const response = await axios.get('http://localhost:5000/api/users/dashboard', config);
         
-        setUserData(response.data.user);
-        setScores(response.data.scores || []);
-        setReviews(response.data.reviews || []);
-      } catch (error) {
-        console.error('Error fetching dashboard data', error);
-        if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/login');
+        if (response.data && response.data.user) {
+          setUserData(response.data.user);
+          setScores(response.data.scores || []);
+          setReviews(response.data.reviews || []);
+        } else {
+          throw new Error('User profile data not found.');
         }
+      } catch (err) {
+        console.error('Error fetching dashboard data', err);
+        const status = err.response?.status;
+        if (status === 401 || status === 403 || status === 404) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          navigate('/login');
+          return;
+        }
+        setError(err.response?.data?.message || err.message || 'Unable to load profile data.');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -45,12 +59,34 @@ const UserDashboard = () => {
     window.location.reload();
   };
 
-  if (!userData) {
+  if (loading) {
     return (
       <Layout>
         <div style={{ padding: '120px 0', textAlign: 'center', background: '#1c082e', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ width: '48px', height: '48px', border: '4px solid #b01ba5', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '16px' }}></div>
           <p style={{ color: '#fff', fontSize: '18px', fontWeight: 600 }}>Loading Gamer Profile...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !userData) {
+    return (
+      <Layout>
+        <div style={{ padding: '120px 0', textAlign: 'center', background: '#1c082e', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>⚠️</div>
+          <h3 style={{ color: '#fff', marginBottom: '10px' }}>Session Expired or Profile Not Found</h3>
+          <p style={{ color: '#94a3b8', maxWidth: '420px', margin: '0 auto 24px auto' }}>
+            {error || 'Your login session is no longer active. Please log in again to access your dashboard.'}
+          </p>
+          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center' }}>
+            <button onClick={handleLogout} className="dash-btn-primary">
+              Log In Again
+            </button>
+            <Link to="/" className="dash-btn-secondary">
+              Return Home
+            </Link>
+          </div>
         </div>
       </Layout>
     );
