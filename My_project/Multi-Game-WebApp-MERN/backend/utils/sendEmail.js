@@ -133,4 +133,69 @@ const sendContactEmail = async ({ name, email, subject, message }) => {
   return { success: true, messageId: info.messageId, previewUrl };
 };
 
-module.exports = { sendContactEmail };
+/**
+ * Sends a direct reply email from Admin to a user's contact message
+ */
+const sendReplyEmail = async ({ to, toName, subject, replyMessage, originalMessage }) => {
+  const transporter = await getTransporter();
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>${subject}</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1e293b; margin: 0; padding: 20px; background-color: #f8fafc; }
+        .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+        .card-header { background: linear-gradient(135deg, #b01ba5 0%, #771680 100%); padding: 24px; color: #ffffff; }
+        .card-header h2 { margin: 0; font-size: 20px; font-weight: 700; }
+        .card-header p { margin: 6px 0 0; opacity: 0.85; font-size: 13px; }
+        .card-body { padding: 24px; }
+        .reply-text { font-size: 15px; color: #0f172a; line-height: 1.7; white-space: pre-wrap; margin-bottom: 24px; }
+        .quote-header { font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; color: #64748b; margin-bottom: 6px; }
+        .quote-box { background: #f1f5f9; border-left: 4px solid #94a3b8; padding: 14px 16px; border-radius: 6px; font-size: 13px; color: #475569; font-style: italic; white-space: pre-wrap; }
+        .footer { padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center; }
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <div class="card-header">
+          <h2>🎮 ENDGAME Platform Support</h2>
+          <p>Response to your recent inquiry</p>
+        </div>
+        <div class="card-body">
+          <p style="font-weight: 600; color: #0f172a; margin-top: 0;">Hello ${toName || 'there'},</p>
+          <div class="reply-text">${replyMessage}</div>
+          
+          <div class="quote-header">Your Original Message:</div>
+          <div class="quote-box">${originalMessage}</div>
+        </div>
+        <div class="footer">
+          Sent by ENDGAME Support Team • <a href="http://localhost:5173" style="color: #b01ba5; text-decoration: none;">Visit ENDGAME</a>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  if (!transporter) {
+    console.log(`[REPLY SIMULATED] To: ${to}, Subject: ${subject}`);
+    return { success: true, simulated: true };
+  }
+
+  const mailOptions = {
+    from: `"ENDGAME Support" <${process.env.SMTP_USER || 'no-reply@endgame.com'}>`,
+    to: to,
+    subject: subject || 'Response from ENDGAME Support',
+    html: htmlContent,
+    text: `Hello ${toName},\n\n${replyMessage}\n\n--- Your Original Message ---\n${originalMessage}`
+  };
+
+  const info = await transporter.sendMail(mailOptions);
+  console.log('Reply email successfully dispatched to:', to, 'ID:', info.messageId);
+
+  return { success: true, messageId: info.messageId };
+};
+
+module.exports = { sendContactEmail, sendReplyEmail };

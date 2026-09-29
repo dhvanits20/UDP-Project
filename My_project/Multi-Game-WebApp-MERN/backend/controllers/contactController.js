@@ -65,4 +65,44 @@ const getContactMessages = async (req, res) => {
   }
 };
 
-module.exports = { submitContact, getContactMessages };
+// Reply to a contact message
+const replyContact = async (req, res) => {
+  try {
+    const { messageId, replySubject, replyMessage } = req.body;
+
+    if (!messageId) {
+      return res.status(400).json({ message: 'Message ID is required' });
+    }
+
+    if (!replyMessage || !replyMessage.trim()) {
+      return res.status(400).json({ message: 'Reply message cannot be empty' });
+    }
+
+    const contact = await Contact.findById(messageId);
+    if (!contact) {
+      return res.status(404).json({ message: 'Contact message not found' });
+    }
+
+    const result = await sendReplyEmail({
+      to: contact.email,
+      toName: contact.name,
+      subject: replySubject || `Re: ${contact.subject}`,
+      replyMessage: replyMessage.trim(),
+      originalMessage: contact.message
+    });
+
+    contact.status = 'responded';
+    await contact.save();
+
+    res.json({
+      success: true,
+      message: `Reply sent successfully to ${contact.email}!`,
+      messageId: result?.messageId
+    });
+  } catch (error) {
+    console.error('Error replying to contact inquiry:', error);
+    res.status(500).json({ message: error.message || 'Failed to send reply email' });
+  }
+};
+
+module.exports = { submitContact, getContactMessages, replyContact };

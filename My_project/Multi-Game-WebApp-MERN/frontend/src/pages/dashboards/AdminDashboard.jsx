@@ -20,10 +20,56 @@ const AdminDashboard = () => {
   const [recentGames, setRecentGames] = useState([]);
   const [topScores, setTopScores] = useState([]);
   const [contactMessages, setContactMessages] = useState([]);
+  const [replyModalOpen, setReplyModalOpen] = useState(false);
+  const [activeMessage, setActiveMessage] = useState(null);
+  const [replySubject, setReplySubject] = useState('');
+  const [replyText, setReplyText] = useState('');
+  const [replySending, setReplySending] = useState(false);
+  const [replyStatus, setReplyStatus] = useState(null);
   const [pdfGenerating, setPdfGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const openReplyModal = (msg) => {
+    setActiveMessage(msg);
+    setReplySubject(msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`);
+    setReplyText('');
+    setReplyStatus(null);
+    setReplyModalOpen(true);
+  };
+
+  const handleSendReply = async (e) => {
+    e.preventDefault();
+    if (!replyText.trim() || !activeMessage) return;
+
+    setReplySending(true);
+    setReplyStatus(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const res = await axios.post('http://localhost:5000/api/contact/reply', {
+        messageId: activeMessage._id,
+        replySubject: replySubject.trim(),
+        replyMessage: replyText.trim()
+      }, config);
+
+      setReplyStatus({ type: 'success', message: res.data.message || `Reply sent to ${activeMessage.email}!` });
+      
+      // Update local status of contact message
+      setContactMessages(prev => prev.map(m => m._id === activeMessage._id ? { ...m, status: 'responded' } : m));
+
+      setTimeout(() => {
+        setReplyModalOpen(false);
+        setActiveMessage(null);
+      }, 1600);
+    } catch (err) {
+      setReplyStatus({ type: 'error', message: err.response?.data?.message || 'Failed to send reply email' });
+    } finally {
+      setReplySending(false);
+    }
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -495,14 +541,29 @@ const AdminDashboard = () => {
                         {new Date(msg.createdAt).toLocaleDateString()}
                       </td>
                       <td style={{ textAlign: 'right' }}>
-                        <a 
-                          href={`mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}`}
-                          className="dash-btn-secondary"
-                          style={{ padding: '6px 12px', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}
-                        >
-                          <svg style={{ width: '12px', height: '12px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
-                          Reply
-                        </a>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                          {msg.status === 'responded' && (
+                            <span className="dash-badge dash-badge-success" style={{ fontSize: '10px', padding: '3px 8px' }}>
+                              Replied ✓
+                            </span>
+                          )}
+                          <button 
+                            onClick={() => openReplyModal(msg)}
+                            className="dash-btn-secondary"
+                            style={{ 
+                              padding: '6px 14px', 
+                              fontSize: '11px', 
+                              display: 'inline-flex', 
+                              alignItems: 'center', 
+                              gap: '6px',
+                              background: msg.status === 'responded' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(217, 70, 239, 0.15)',
+                              borderColor: msg.status === 'responded' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(217, 70, 239, 0.4)'
+                            }}
+                          >
+                            <svg style={{ width: '12px', height: '12px', color: msg.status === 'responded' ? '#34d399' : '#d946ef' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                            <span>{msg.status === 'responded' ? 'Reply Again' : 'Reply'}</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -516,6 +577,145 @@ const AdminDashboard = () => {
           </div>
         </div>
       </main>
+
+      {/* Reply Modal */}
+      {replyModalOpen && activeMessage && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(7, 2, 14, 0.85)',
+          backdropFilter: 'blur(8px)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px'
+        }}>
+          <div style={{
+            background: 'linear-gradient(145deg, #1c082e 0%, #120420 100%)',
+            border: '1px solid rgba(217, 70, 239, 0.4)',
+            borderRadius: '20px',
+            width: '100%',
+            maxWidth: '640px',
+            boxShadow: '0 25px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(176, 27, 165, 0.25)',
+            padding: '28px',
+            animation: 'fadeIn 0.2s ease-out'
+          }}>
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', paddingBottom: '16px' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>✉️</span>
+                  <span>Reply to Contact Inquiry</span>
+                </h3>
+                <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#94a3b8' }}>
+                  Sending direct response to: <strong style={{ color: '#d946ef' }}>{activeMessage.name}</strong> ({activeMessage.email})
+                </p>
+              </div>
+              <button 
+                onClick={() => setReplyModalOpen(false)}
+                style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '22px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}
+                title="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Quoted Message */}
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.04)',
+              borderLeft: '4px solid #d946ef',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              marginBottom: '20px',
+              fontSize: '13px'
+            }}>
+              <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.6px', fontWeight: 700, marginBottom: '4px' }}>
+                Original Message (Subject: {activeMessage.subject})
+              </div>
+              <div style={{ color: '#e2e8f0', fontStyle: 'italic', lineHeight: 1.5 }}>
+                "{activeMessage.message}"
+              </div>
+            </div>
+
+            {/* Feedback Alerts */}
+            {replyStatus?.type === 'success' && (
+              <div style={{ background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.35)', color: '#86efac', padding: '12px 16px', borderRadius: '10px', marginBottom: '18px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>🎉</span>
+                <span>{replyStatus.message}</span>
+              </div>
+            )}
+            {replyStatus?.type === 'error' && (
+              <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#fca5a5', padding: '12px 16px', borderRadius: '10px', marginBottom: '18px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>⚠️</span>
+                <span>{replyStatus.message}</span>
+              </div>
+            )}
+
+            {/* Reply Form */}
+            <form onSubmit={handleSendReply}>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#e2e8f0', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '6px' }}>
+                  Email Subject
+                </label>
+                <input 
+                  type="text"
+                  className="game-form-input"
+                  value={replySubject}
+                  onChange={(e) => setReplySubject(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div style={{ marginBottom: '22px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#e2e8f0', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '6px' }}>
+                  Your Reply Message
+                </label>
+                <textarea 
+                  className="game-form-textarea"
+                  rows="5"
+                  placeholder="Type your response to the user here..."
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  required
+                  autoFocus
+                  style={{ minHeight: '120px' }}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', alignItems: 'center' }}>
+                <button 
+                  type="button"
+                  onClick={() => setReplyModalOpen(false)}
+                  className="dash-btn-secondary"
+                  disabled={replySending}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="dash-btn-primary"
+                  disabled={replySending || !replyText.trim()}
+                  style={{ padding: '12px 28px', fontSize: '14px' }}
+                >
+                  {replySending ? (
+                    <>
+                      <div style={{ width: '16px', height: '16px', border: '2px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+                      <span>Sending Email...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Send Reply Email</span>
+                      <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
