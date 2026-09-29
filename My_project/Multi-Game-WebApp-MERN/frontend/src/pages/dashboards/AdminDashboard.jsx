@@ -411,7 +411,7 @@ const AdminDashboard = () => {
                 Contact Inquiries Inbox ({contactMessages.length})
               </h3>
               <span style={{ fontSize: '12px', color: '#94a3b8' }}>
-                Forwarded directly to: <strong style={{ color: '#e2e8f0' }}>dhvanitshah062@gmail.com</strong>
+                Forwarded directly to: <strong style={{ color: '#e2e8f0' }}>dhvanitcshah172006@gmail.com</strong>
               </span>
             </div>
 

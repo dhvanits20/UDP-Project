@@ -6,13 +6,26 @@ const nodemailer = require('nodemailer');
 const getTransporter = async () => {
   // If real SMTP credentials are provided in .env
   if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+    const isGmail = (process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail')) || 
+                    (process.env.SMTP_USER && process.env.SMTP_USER.includes('@gmail.com'));
+
+    if (isGmail) {
+      return nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.SMTP_USER.trim(),
+          pass: process.env.SMTP_PASS.replace(/\s+/g, '') // auto-strips spaces if copied from Google
+        }
+      });
+    }
+
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: Number(process.env.SMTP_PORT) || 587,
+      port: Number(process.env.SMTP_PORT) || 465,
       secure: Number(process.env.SMTP_PORT) === 465,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
+        user: process.env.SMTP_USER.trim(),
+        pass: process.env.SMTP_PASS.replace(/\s+/g, '')
       }
     });
   }
@@ -39,7 +52,7 @@ const getTransporter = async () => {
  * Sends a contact message notification to the platform inbox
  */
 const sendContactEmail = async ({ name, email, subject, message }) => {
-  const recipientInbox = process.env.CONTACT_INBOX_EMAIL || 'dhvanitshah062@gmail.com';
+  const recipientInbox = process.env.CONTACT_INBOX_EMAIL || 'dhvanitcshah172006@gmail.com';
   const transporter = await getTransporter();
 
   const htmlContent = `
