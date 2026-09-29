@@ -57,13 +57,17 @@ const AdminDashboard = () => {
 
       setReplyStatus({ type: 'success', message: res.data.message || `Reply sent to ${activeMessage.email}!` });
       
-      // Update local status of contact message
-      setContactMessages(prev => prev.map(m => m._id === activeMessage._id ? { ...m, status: 'responded' } : m));
+      // Automatically remove replied inquiry from the inbox table
+      setContactMessages(prev => prev.filter(m => m._id !== activeMessage._id));
+      setStats(prev => ({
+        ...prev,
+        contactInquiries: Math.max(0, (prev.contactInquiries || 1) - 1)
+      }));
 
       setTimeout(() => {
         setReplyModalOpen(false);
         setActiveMessage(null);
-      }, 1600);
+      }, 1500);
     } catch (err) {
       setReplyStatus({ type: 'error', message: err.response?.data?.message || 'Failed to send reply email' });
     } finally {

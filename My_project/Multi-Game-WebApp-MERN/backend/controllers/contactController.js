@@ -1,5 +1,5 @@
 const Contact = require('../models/Contact');
-const { sendContactEmail } = require('../utils/sendEmail');
+const { sendContactEmail, sendReplyEmail } = require('../utils/sendEmail');
 
 // Submit a contact message
 const submitContact = async (req, res) => {
@@ -91,12 +91,12 @@ const replyContact = async (req, res) => {
       originalMessage: contact.message
     });
 
-    contact.status = 'responded';
-    await contact.save();
+    // Automatically delete contact inquiry from inbox once replied
+    await Contact.findByIdAndDelete(messageId);
 
     res.json({
       success: true,
-      message: `Reply sent successfully to ${contact.email}!`,
+      message: `Reply sent successfully to ${contact.email} and inquiry cleared!`,
       messageId: result?.messageId
     });
   } catch (error) {
