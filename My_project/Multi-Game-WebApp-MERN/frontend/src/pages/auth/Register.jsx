@@ -22,6 +22,12 @@ const Register = () => {
     e.preventDefault();
     setError(null);
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(formData.email.trim())) {
+      setError('Please provide a valid email address.');
+      return;
+    }
+
     if (formData.password !== formData.password_confirmation) {
       setError('Passwords do not match.');
       return;
@@ -31,8 +37,8 @@ const Register = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', {
-        name: formData.name,
-        email: formData.email,
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
         password: formData.password
       });
       

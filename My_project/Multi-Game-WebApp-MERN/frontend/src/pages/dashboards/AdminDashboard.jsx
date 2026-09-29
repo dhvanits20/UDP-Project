@@ -19,6 +19,7 @@ const AdminDashboard = () => {
   });
   const [recentGames, setRecentGames] = useState([]);
   const [topScores, setTopScores] = useState([]);
+  const [contactMessages, setContactMessages] = useState([]);
   const [pdfGenerating, setPdfGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,6 +53,14 @@ const AdminDashboard = () => {
           });
           setRecentGames(response.data.recentGames || []);
           setTopScores(response.data.topScores || []);
+
+          // Fetch contact messages
+          try {
+            const contactRes = await axios.get('http://localhost:5000/api/contact/all', config);
+            setContactMessages(contactRes.data || []);
+          } catch (e) {
+            console.log('Contact messages fetch note:', e.message);
+          }
         } else {
           throw new Error('Admin data not found');
         }
@@ -243,6 +252,16 @@ const AdminDashboard = () => {
               <span>Reviews</span>
             </div>
           </Link>
+
+          <a href="#contact-inbox" className="dash-nav-item">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              <span>Contact Inbox</span>
+            </div>
+            {contactMessages.length > 0 && (
+              <span className="dash-nav-badge" style={{ background: '#38bdf8' }}>{contactMessages.length}</span>
+            )}
+          </a>
         </nav>
 
         {/* Profile Footer */}
@@ -377,6 +396,66 @@ const AdminDashboard = () => {
                   ) : (
                     <tr>
                       <td colSpan="4" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>No games found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Contact Inquiries Inbox */}
+          <div className="dashboard-card" id="contact-inbox" style={{ marginTop: '24px' }}>
+            <div className="dashboard-card-header">
+              <h3>
+                <svg style={{ width: '20px', height: '20px', color: '#38bdf8' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                Contact Inquiries Inbox ({contactMessages.length})
+              </h3>
+              <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+                Forwarded directly to: <strong style={{ color: '#e2e8f0' }}>dhvanitshah062@gmail.com</strong>
+              </span>
+            </div>
+
+            <div className="dash-table-wrapper">
+              <table className="dash-table">
+                <thead>
+                  <tr>
+                    <th>Sender</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th style={{ textAlign: 'right' }}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contactMessages.length > 0 ? (
+                    contactMessages.map((msg, idx) => (
+                      <tr key={idx}>
+                        <td>
+                          <div style={{ fontWeight: 700, color: '#fff' }}>{msg.name}</div>
+                          <div style={{ fontSize: '12px', color: '#94a3b8' }}>{msg.email}</div>
+                        </td>
+                        <td style={{ color: '#d946ef', fontWeight: 600 }}>{msg.subject}</td>
+                        <td style={{ color: '#cbd5e1', maxWidth: '280px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {msg.message}
+                        </td>
+                        <td style={{ color: '#94a3b8', fontSize: '12px' }}>
+                          {new Date(msg.createdAt).toLocaleDateString()}
+                        </td>
+                        <td style={{ textAlign: 'right' }}>
+                          <a 
+                            href={`mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}`}
+                            className="dash-btn-secondary"
+                            style={{ padding: '6px 12px', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}
+                          >
+                            <svg style={{ width: '12px', height: '12px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                            Reply
+                          </a>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>No contact inquiries received yet.</td>
                     </tr>
                   )}
                 </tbody>

@@ -1,39 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-// import { useAuth } from '../context/AuthContext'; // Assume we will use this later
+import axios from 'axios';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [emailError, setEmailError] = useState('');
   const [status, setStatus] = useState(null); // { type: 'success' | 'error', message: '' }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  // const { user } = useAuth(); // Assume we will have auth context
-  const user = null; // Mock for now until auth is integrated
+
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const u = JSON.parse(storedUser);
+        setFormData(prev => ({
+          ...prev,
+          name: u.name || '',
+          email: u.email || ''
+        }));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  const validateEmailFormat = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    return regex.test(email.trim());
+  };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === 'email') {
+      if (value.trim() && !validateEmailFormat(value)) {
+        setEmailError('Please enter a valid email address');
+      } else {
+        setEmailError('');
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Auth check similar to Laravel's @auth
-    if (!user && false) { // Set false temporarily so the form can be seen/tested without auth
-      navigate('/login');
+    if (!validateEmailFormat(formData.email)) {
+      setEmailError('Please enter a valid email address');
       return;
     }
+    setEmailError('');
 
     setIsSubmitting(true);
     setStatus(null);
 
     try {
-      // Fake API Call for now. Later hook it up to our backend Express route
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setStatus({ type: 'success', message: 'Your message has been sent successfully!' });
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      const res = await axios.post('http://localhost:5000/api/contact', {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim()
+      });
+
+      setStatus({ 
+        type: 'success', 
+        message: res.data.message || 'Your message has been sent directly to our inbox! We will get back to you shortly.' 
+      });
+      setFormData(prev => ({ ...prev, subject: '', message: '' }));
     } catch (error) {
-      setStatus({ type: 'error', message: 'Failed to send message. Please try again later.' });
+      setStatus({ 
+        type: 'error', 
+        message: error.response?.data?.message || 'Failed to send message. Please try again later.' 
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -77,6 +117,11 @@ const Contact = () => {
               <form className="contact-form" onSubmit={handleSubmit}>
                 <input type="text" name="name" placeholder="Your name" value={formData.name} onChange={handleChange} required />
                 <input type="email" name="email" placeholder="Your e-mail" value={formData.email} onChange={handleChange} required />
+                {emailError && (
+                  <div style={{ color: '#ef4444', fontSize: '13px', margin: '-10px 0 15px 5px', fontWeight: 600 }}>
+                    ⚠️ {emailError}
+                  </div>
+                )}
                 <input type="text" name="subject" placeholder="Subject" value={formData.subject} onChange={handleChange} required />
                 <textarea name="message" placeholder="Message" value={formData.message} onChange={handleChange} required></textarea>
                 <button 

@@ -26,7 +26,7 @@ const Login = () => {
       const response = await axios.post('http://localhost:5000/api/auth/login', formData);
       const { token, _id, name, email, role } = response.data;
       const user = { _id, name, email, role };
-      
+
       // Store auth token
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
@@ -35,9 +35,9 @@ const Login = () => {
       if (user.role === 'admin') navigate('/admin/dashboard');
       else if (user.role === 'developer') navigate('/developer/dashboard');
       else navigate('/user/dashboard');
-      
+
       // We will need a proper AuthContext to refresh header state globally later.
-      window.location.reload(); 
+      window.location.reload();
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid login credentials.');
     } finally {
@@ -67,25 +67,25 @@ const Login = () => {
               <form className="contact-form" onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="col-md-6">
-                    <input 
-                      type="email" 
-                      placeholder="Email" 
-                      name="email" 
-                      value={formData.email} 
-                      onChange={handleChange} 
-                      required 
-                      autoFocus 
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      autoFocus
                     />
                   </div>
                   <div className="col-md-6">&nbsp;</div>
                   <div className="col-md-6">
-                    <input 
-                      type="password" 
-                      placeholder="Password" 
-                      name="password" 
-                      value={formData.password} 
-                      onChange={handleChange} 
-                      required 
+                    <input
+                      type="password"
+                      placeholder="Password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
                     />
                     {error && (
                       <span className="text-danger">
@@ -95,14 +95,14 @@ const Login = () => {
                   </div>
                   <div className="col-lg-12">
                     <div className="form-check" style={{ marginBottom: '20px', paddingLeft: 0 }}>
-                      <input 
-                        className="form-check-input" 
-                        type="checkbox" 
-                        name="remember" 
-                        id="remember" 
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        name="remember"
+                        id="remember"
                         checked={formData.remember}
                         onChange={handleChange}
-                        style={{ width: 'auto', height: 'auto', display: 'inline-block', marginRight: '5px' }} 
+                        style={{ width: 'auto', height: 'auto', display: 'inline-block', marginRight: '5px' }}
                       />
                       <label className="form-check-label text-white" htmlFor="remember">
                         Remember Me
