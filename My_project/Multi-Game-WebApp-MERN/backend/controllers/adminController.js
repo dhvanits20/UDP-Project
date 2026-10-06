@@ -116,19 +116,24 @@ const updateGame = async (req, res) => {
     const { title, status } = req.body;
     const game = await Game.findById(req.params.id);
 
-    if (game) {
-      game.title = title || game.title;
-      game.status = status || game.status;
-      
-      const updatedGame = await game.save();
-      // Populate category to return consistent data format
-      await updatedGame.populate('category_id', 'name');
-      res.json(updatedGame);
-    } else {
-      res.status(404).json({ message: 'Game not found' });
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
     }
+
+    if (title && title.trim()) {
+      game.title = title.trim();
+    }
+    if (status) {
+      game.status = status;
+    }
+    
+    const updatedGame = await game.save();
+    // Populate category to return consistent data format
+    await updatedGame.populate('category_id', 'name');
+    res.json(updatedGame);
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    console.error('Error updating game:', error);
+    res.status(500).json({ message: error.message || 'Failed to update game' });
   }
 };
 

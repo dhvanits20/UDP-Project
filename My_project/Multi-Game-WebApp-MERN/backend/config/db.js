@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 3000
+      serverSelectionTimeoutMS: 15000
     });
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`Real Local MongoDB Connected: ${conn.connection.host}`);
     
     const seedDatabase = require('../utils/seeder');
     await seedDatabase();

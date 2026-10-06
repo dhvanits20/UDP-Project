@@ -54,7 +54,7 @@ const AdminGames = () => {
       setEditingGame(null);
     } catch (error) {
       console.error('Error updating game', error);
-      alert('Failed to update game');
+      alert(error.response?.data?.message || 'Failed to update game');
     } finally {
       setUpdating(false);
     }
@@ -243,8 +243,9 @@ const AdminGames = () => {
                     style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', background: '#250d40', border: '1px solid rgba(255, 255, 255, 0.15)', color: '#fff', fontSize: '14px', boxSizing: 'border-box' }}
                   >
                     <option value="public">Public (Active)</option>
+                    <option value="private">Private (Hidden)</option>
                     <option value="pending">Pending</option>
-                    <option value="rejected">Rejected / Private</option>
+                    <option value="rejected">Rejected</option>
                   </select>
                 </div>
 
