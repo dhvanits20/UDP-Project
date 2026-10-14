@@ -28,11 +28,6 @@ const Register = () => {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long.');
-      return;
-    }
-
     if (formData.password !== formData.password_confirmation) {
       setError('Passwords do not match.');
       return;
@@ -64,10 +59,9 @@ const Register = () => {
 
   return (
     <Layout>
-      {/* Hero Header */}
       <section className="page-top-section set-bg" style={{ backgroundImage: "url('/assets/img/page-top-bg/4.jpg')" }}>
         <div className="page-info">
-          <h2>Player Registration</h2>
+          <h2>Register</h2>
           <div className="site-breadcrumb">
             <Link to="/">Home</Link> /
             <span>Register</span>
@@ -75,351 +69,222 @@ const Register = () => {
         </div>
       </section>
 
-      {/* Main Auth Section with Rich Cyber Atmosphere */}
-      <section style={{ 
-        position: 'relative', 
-        padding: '70px 0 100px', 
-        minHeight: '750px',
-        overflow: 'hidden'
-      }}>
-        {/* Ambient Decorative Lighting */}
-        <div style={{
-          position: 'absolute',
-          top: '15%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '650px',
-          height: '650px',
-          background: 'radial-gradient(circle, rgba(217, 70, 239, 0.16) 0%, rgba(124, 58, 237, 0.08) 45%, transparent 70%)',
-          filter: 'blur(60px)',
-          pointerEvents: 'none',
-          zIndex: 0
-        }}></div>
-
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="row justify-content-center">
-            <div className="col-xl-5 col-lg-6 col-md-8 col-sm-11">
-              
-              {/* Glassmorphic Auth Card */}
-              <div style={{
-                background: 'rgba(22, 10, 42, 0.82)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(217, 70, 239, 0.28)',
-                borderRadius: '24px',
-                padding: '42px 36px',
-                boxShadow: '0 25px 60px rgba(0, 0, 0, 0.65), 0 0 35px rgba(176, 27, 165, 0.15)',
-                transition: 'all 0.3s ease'
-              }}>
-
-                {/* Role Switcher Tabs */}
-                <div style={{
-                  display: 'flex',
-                  background: 'rgba(0, 0, 0, 0.35)',
-                  padding: '5px',
-                  borderRadius: '14px',
-                  marginBottom: '28px',
-                  border: '1px solid rgba(255, 255, 255, 0.08)'
-                }}>
-                  <div style={{
-                    flex: 1,
-                    textAlign: 'center',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'linear-gradient(135deg, #b01ba5 0%, #771680 100%)',
-                    color: '#fff',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    letterSpacing: '0.5px',
-                    boxShadow: '0 4px 15px rgba(176, 27, 165, 0.4)',
-                    cursor: 'default',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px'
-                  }}>
-                    <span>🎮</span> Player Account
-                  </div>
-
-                  <Link to="/developer/register" style={{
-                    flex: 1,
-                    textAlign: 'center',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    color: '#94a3b8',
-                    fontWeight: 600,
-                    fontSize: '13px',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px'
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = '#f0abfc'; e.currentTarget.style.background = 'rgba(217, 70, 239, 0.1)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.background = 'transparent'; }}
-                  >
-                    <span>⚡</span> Developer Studio
-                  </Link>
+      <section className="contact-page">
+        <div className="container">
+          <div className="row align-items-center">
+            {/* Left Column: Register Form */}
+            <div className="col-lg-6 col-md-12 mb-5 mb-lg-0">
+              <div className="section-title text-white" style={{ marginBottom: '30px' }}>
+                <h2 style={{ margin: 0 }}>Create a new account</h2>
+              </div>
+              <form className="contact-form" onSubmit={handleSubmit} style={{ margin: 0 }}>
+                <div>
+                  <input 
+                    type="text" 
+                    placeholder="Name" 
+                    name="name" 
+                    value={formData.name} 
+                    onChange={handleChange} 
+                    required 
+                    autoFocus 
+                  />
                 </div>
 
-                {/* Card Title & Subtitle */}
-                <div style={{ textAlign: 'center', marginBottom: '26px' }}>
-                  <h3 style={{ 
-                    color: '#fff', 
-                    fontSize: '24px', 
-                    fontWeight: 900, 
-                    letterSpacing: '-0.5px', 
-                    marginBottom: '8px',
-                    fontFamily: "'Roboto', sans-serif" 
-                  }}>
-                    Create Your Account
-                  </h3>
-                  <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0, lineHeight: 1.5 }}>
-                    Join the arena, play games, compete on leaderboards & earn coins.
-                  </p>
+                <div>
+                  <input 
+                    type="email" 
+                    placeholder="Email" 
+                    name="email" 
+                    value={formData.email} 
+                    onChange={handleChange} 
+                    required 
+                  />
                 </div>
 
-                {/* Registration Form */}
-                <form onSubmit={handleSubmit} style={{ margin: 0 }}>
-                  
-                  {/* Name Field */}
-                  <div style={{ marginBottom: '18px' }}>
-                    <label style={{ display: 'block', color: '#cbd5e1', fontSize: '13px', fontWeight: 700, marginBottom: '6px' }}>
-                      Player Username <span style={{ color: '#f43f5e' }}>*</span>
-                    </label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g. CyberKnight" 
-                      name="name" 
-                      value={formData.name} 
-                      onChange={handleChange} 
-                      required 
-                      autoFocus 
-                      style={{
-                        width: '100%',
-                        height: '50px',
-                        padding: '0 18px',
-                        borderRadius: '12px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.15)',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#d946ef';
-                        e.target.style.boxShadow = '0 0 16px rgba(217, 70, 239, 0.35)';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                        e.target.style.boxShadow = 'none';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)';
-                      }}
-                    />
-                  </div>
+                <div>
+                  <input 
+                    type="password" 
+                    placeholder="Password" 
+                    name="password" 
+                    value={formData.password} 
+                    onChange={handleChange} 
+                    required 
+                  />
+                </div>
 
-                  {/* Email Field */}
-                  <div style={{ marginBottom: '18px' }}>
-                    <label style={{ display: 'block', color: '#cbd5e1', fontSize: '13px', fontWeight: 700, marginBottom: '6px' }}>
-                      Email Address <span style={{ color: '#f43f5e' }}>*</span>
-                    </label>
-                    <input 
-                      type="email" 
-                      placeholder="player@example.com" 
-                      name="email" 
-                      value={formData.email} 
-                      onChange={handleChange} 
-                      required 
-                      style={{
-                        width: '100%',
-                        height: '50px',
-                        padding: '0 18px',
-                        borderRadius: '12px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.15)',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#d946ef';
-                        e.target.style.boxShadow = '0 0 16px rgba(217, 70, 239, 0.35)';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                        e.target.style.boxShadow = 'none';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)';
-                      }}
-                    />
-                  </div>
-
-                  {/* Password Field */}
-                  <div style={{ marginBottom: '18px' }}>
-                    <label style={{ display: 'block', color: '#cbd5e1', fontSize: '13px', fontWeight: 700, marginBottom: '6px' }}>
-                      Password (min. 6 characters) <span style={{ color: '#f43f5e' }}>*</span>
-                    </label>
-                    <input 
-                      type="password" 
-                      placeholder="Enter a strong password" 
-                      name="password" 
-                      value={formData.password} 
-                      onChange={handleChange} 
-                      required 
-                      style={{
-                        width: '100%',
-                        height: '50px',
-                        padding: '0 18px',
-                        borderRadius: '12px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.15)',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#d946ef';
-                        e.target.style.boxShadow = '0 0 16px rgba(217, 70, 239, 0.35)';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                        e.target.style.boxShadow = 'none';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)';
-                      }}
-                    />
-                  </div>
-
-                  {/* Confirm Password Field */}
-                  <div style={{ marginBottom: '22px' }}>
-                    <label style={{ display: 'block', color: '#cbd5e1', fontSize: '13px', fontWeight: 700, marginBottom: '6px' }}>
-                      Confirm Password <span style={{ color: '#f43f5e' }}>*</span>
-                    </label>
-                    <input 
-                      type="password" 
-                      placeholder="Repeat your password" 
-                      name="password_confirmation" 
-                      value={formData.password_confirmation} 
-                      onChange={handleChange} 
-                      required 
-                      style={{
-                        width: '100%',
-                        height: '50px',
-                        padding: '0 18px',
-                        borderRadius: '12px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.15)',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#d946ef';
-                        e.target.style.boxShadow = '0 0 16px rgba(217, 70, 239, 0.35)';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                        e.target.style.boxShadow = 'none';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)';
-                      }}
-                    />
-                  </div>
-
-                  {/* Error Box */}
+                <div>
+                  <input 
+                    type="password" 
+                    placeholder="Confirm Password" 
+                    name="password_confirmation" 
+                    value={formData.password_confirmation} 
+                    onChange={handleChange} 
+                    required 
+                  />
                   {error && (
-                    <div style={{
-                      padding: '12px 16px',
-                      borderRadius: '12px',
-                      background: 'rgba(239, 68, 68, 0.15)',
-                      border: '1px solid rgba(239, 68, 68, 0.4)',
-                      color: '#fca5a5',
-                      fontSize: '13px',
-                      marginBottom: '20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
+                    <div style={{ 
+                      padding: '10px 16px', 
+                      borderRadius: '8px', 
+                      background: 'rgba(239, 68, 68, 0.15)', 
+                      border: '1px solid rgba(239, 68, 68, 0.4)', 
+                      color: '#fca5a5', 
+                      fontSize: '13px', 
+                      marginBottom: '20px' 
                     }}>
-                      <span>⚠️</span>
-                      <span>{error}</span>
+                      ⚠️ {error}
                     </div>
                   )}
+                </div>
 
-                  {/* Submit Button */}
-                  <button 
-                    className="site-btn" 
-                    type="submit" 
-                    disabled={loading}
-                    style={{
-                      width: '100%',
-                      height: '54px',
-                      background: 'linear-gradient(135deg, #b01ba5 0%, #771680 100%)',
-                      boxShadow: '0 8px 25px rgba(176, 27, 165, 0.4)',
-                      borderRadius: '12px',
-                      fontSize: '15px',
-                      fontWeight: 800,
-                      letterSpacing: '0.5px',
-                      cursor: loading ? 'not-allowed' : 'pointer',
-                      border: 'none',
-                      color: '#fff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '10px',
-                      transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!loading) {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 12px 30px rgba(176, 27, 165, 0.6)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(176, 27, 165, 0.4)';
-                    }}
-                  >
-                    <span>{loading ? 'Registering Player...' : 'Create Player Account'}</span>
-                    <img src="/assets/img/icons/double-arrow.png" alt="#" style={{ width: '12px', height: 'auto' }} />
+                <div className="mt-2">
+                  <button className="site-btn" type="submit" disabled={loading}>
+                    {loading ? 'Registering...' : 'Register'} <img src="/assets/img/icons/double-arrow.png" alt="#" />
                   </button>
+                  <div className="mt-3">
+                    <span className="text-white">Already have an account? </span>
+                    <Link to="/login" className="text-primary font-weight-bold">Login here</Link>
+                  </div>
+                </div>
+              </form>
+            </div>
 
-                  {/* Footer Navigation */}
-                  <div style={{ 
-                    marginTop: '24px', 
-                    paddingTop: '20px', 
-                    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-                    textAlign: 'center'
-                  }}>
-                    <div style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '12px' }}>
-                      Already have an account?{' '}
-                      <Link to="/login" style={{ color: '#38bdf8', fontWeight: 700, textDecoration: 'none' }}>
-                        Login here
-                      </Link>
+            {/* Right Column: Aesthetic Platform Perks & Showcase Card */}
+            <div className="col-lg-6 col-md-12 pl-lg-5">
+              <div style={{
+                background: 'linear-gradient(145deg, rgba(32, 10, 52, 0.85) 0%, rgba(18, 6, 33, 0.92) 100%)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(217, 70, 239, 0.35)',
+                borderRadius: '24px',
+                padding: '36px 32px',
+                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(176, 27, 165, 0.15)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                {/* Decorative Top Accent Light */}
+                <div style={{
+                  position: 'absolute',
+                  top: '-40px',
+                  right: '-40px',
+                  width: '180px',
+                  height: '180px',
+                  background: 'radial-gradient(circle, rgba(217, 70, 239, 0.25) 0%, transparent 70%)',
+                  borderRadius: '50%',
+                  pointerEvents: 'none'
+                }}></div>
+
+                {/* Badge Header */}
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 14px', borderRadius: '20px', background: 'rgba(217, 70, 239, 0.15)', border: '1px solid rgba(217, 70, 239, 0.4)', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '13px' }}>✨</span>
+                  <span style={{ color: '#f0abfc', fontSize: '12px', fontWeight: 800, letterSpacing: '0.8px', textTransform: 'uppercase' }}>
+                    ENDGAME Player Pass
+                  </span>
+                </div>
+
+                <h3 style={{ color: '#fff', fontSize: '24px', fontWeight: 900, marginBottom: '8px', letterSpacing: '-0.3px' }}>
+                  Level Up Your Gaming Experience
+                </h3>
+                <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: 1.6, marginBottom: '24px' }}>
+                  Create your free account today and unlock full access to the ENDGAME ecosystem.
+                </p>
+
+                {/* Feature Points */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '26px' }}>
+                  <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(217, 70, 239, 0.2)', border: '1px solid rgba(217, 70, 239, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                      🎮
                     </div>
-
-                    <div style={{
-                      display: 'inline-block',
-                      background: 'rgba(217, 70, 239, 0.08)',
-                      border: '1px solid rgba(217, 70, 239, 0.25)',
-                      borderRadius: '12px',
-                      padding: '10px 18px',
-                      width: '100%'
-                    }}>
-                      <span style={{ color: '#cbd5e1', fontSize: '13px' }}>Want to publish and monetize games? </span>
-                      <Link to="/developer/register" style={{ color: '#f0abfc', fontWeight: 700, fontSize: '13px', textDecoration: 'none' }}>
-                        Register as Developer →
-                      </Link>
+                    <div>
+                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Instant Browser Gaming</h5>
+                      <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0, lineHeight: 1.5 }}>
+                        Zero downloads, zero waiting. Jump into Chess, Tic-Tac-Toe, and community titles directly.
+                      </p>
                     </div>
                   </div>
 
-                </form>
+                  <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(56, 189, 248, 0.2)', border: '1px solid rgba(56, 189, 248, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                      🏆
+                    </div>
+                    <div>
+                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Live Global Leaderboards</h5>
+                      <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0, lineHeight: 1.5 }}>
+                        Submit high scores on victories and compete against top players worldwide.
+                      </p>
+                    </div>
+                  </div>
 
+                  <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(251, 191, 36, 0.2)', border: '1px solid rgba(251, 191, 36, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                      🪙
+                    </div>
+                    <div>
+                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Coin Rewards & Profile Ranks</h5>
+                      <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0, lineHeight: 1.5 }}>
+                        Earn platform coins for every win, track gameplay history, and level up your player profile.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mini Stat Badges */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '14px 18px',
+                  borderRadius: '12px',
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  marginBottom: '22px'
+                }}>
+                  <div style={{ textAlign: 'center', flex: 1 }}>
+                    <div style={{ color: '#d946ef', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>100%</div>
+                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Free to Play</div>
+                  </div>
+                  <div style={{ width: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
+                  <div style={{ textAlign: 'center', flex: 1 }}>
+                    <div style={{ color: '#38bdf8', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>INSTANT</div>
+                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Matchmaking</div>
+                  </div>
+                  <div style={{ width: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
+                  <div style={{ textAlign: 'center', flex: 1 }}>
+                    <div style={{ color: '#4ade80', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>SECURE</div>
+                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Player Data</div>
+                  </div>
+                </div>
+
+                {/* Developer Switcher Callout Box */}
+                <div style={{
+                  padding: '16px 18px',
+                  borderRadius: '14px',
+                  background: 'rgba(217, 70, 239, 0.1)',
+                  border: '1px dashed rgba(217, 70, 239, 0.45)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '12px'
+                }}>
+                  <div>
+                    <div style={{ color: '#fff', fontSize: '13px', fontWeight: 700 }}>Are you a Game Developer?</div>
+                    <div style={{ color: '#cbd5e1', fontSize: '11px' }}>Publish WebGL games & monitor analytics</div>
+                  </div>
+                  <Link 
+                    to="/developer/register" 
+                    style={{ 
+                      padding: '8px 14px', 
+                      borderRadius: '8px', 
+                      background: 'linear-gradient(135deg, #b01ba5 0%, #771680 100%)', 
+                      color: '#fff', 
+                      fontSize: '12px', 
+                      fontWeight: 800, 
+                      textDecoration: 'none',
+                      whiteSpace: 'nowrap',
+                      boxShadow: '0 4px 12px rgba(176, 27, 165, 0.4)'
+                    }}
+                  >
+                    Dev Portal →
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
