@@ -11,7 +11,48 @@ const UserDashboard = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({ name: '', password: '' });
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState({ type: '', text: '' });
   const navigate = useNavigate();
+
+  const handleOpenEdit = () => {
+    setProfileForm({ name: userData?.name || '', password: '' });
+    setProfileMsg({ type: '', text: '' });
+    setIsEditingProfile(true);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setProfileSaving(true);
+    setProfileMsg({ type: '', text: '' });
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const payload = { name: profileForm.name.trim() };
+      if (profileForm.password && profileForm.password.trim()) {
+        payload.password = profileForm.password.trim();
+      }
+      const response = await axios.put('http://localhost:5000/api/users/profile', payload, config);
+      
+      setUserData(prev => ({ ...prev, name: response.data.name }));
+      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      localStorage.setItem('user', JSON.stringify({ ...storedUser, name: response.data.name }));
+
+      setProfileMsg({ type: 'success', text: 'Profile updated successfully!' });
+      setTimeout(() => {
+        setIsEditingProfile(false);
+        setProfileMsg({ type: '', text: '' });
+      }, 1200);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setProfileMsg({ type: 'error', text: err.response?.data?.message || 'Failed to update profile' });
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -220,12 +261,74 @@ const UserDashboard = () => {
                 {/* 1. OVERVIEW TAB */}
                 {activeTab === 'profile' && (
                   <div>
-                    <div className="dashboard-card-header" style={{ marginBottom: '10px' }}>
+                    <div className="dashboard-card-header" style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
                         <h3>Player Profile Overview</h3>
                         <p style={{ color: '#94a3b8', fontSize: '14px', marginTop: '4px' }}>Welcome back, {userData.name}! Here is your gaming activity snapshot.</p>
                       </div>
+                      <button 
+                        onClick={handleOpenEdit}
+                        className="dash-btn-primary" 
+                        style={{ padding: '8px 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                      >
+                        <svg style={{ width: '15px', height: '15px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        Edit Profile
+                      </button>
                     </div>
+
+                    {/* Edit Profile Modal */}
+                    {isEditingProfile && (
+                      <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(8px)', padding: '20px' }}>
+                        <div style={{ background: '#1c0933', border: '1px solid rgba(176, 27, 165, 0.5)', borderRadius: '20px', padding: '30px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)', position: 'relative' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h3 style={{ fontSize: '20px', fontWeight: 700, margin: 0, color: '#fff' }}>Edit Profile</h3>
+                            <button onClick={() => setIsEditingProfile(false)} style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+                          </div>
+
+                          {profileMsg.text && (
+                            <div style={{ padding: '10px 14px', borderRadius: '8px', marginBottom: '16px', fontSize: '13px', fontWeight: 600, background: profileMsg.type === 'success' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: profileMsg.type === 'success' ? '#34d399' : '#f87171', border: `1px solid ${profileMsg.type === 'success' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}` }}>
+                              {profileMsg.text}
+                            </div>
+                          )}
+
+                          <form onSubmit={handleUpdateProfile} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#cbd5e1', marginBottom: '6px', textTransform: 'uppercase' }}>Gamer Display Name</label>
+                              <input 
+                                type="text" 
+                                value={profileForm.name} 
+                                onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })} 
+                                style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.15)', color: '#fff', fontSize: '14px', boxSizing: 'border-box' }}
+                                required 
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#cbd5e1', marginBottom: '6px', textTransform: 'uppercase' }}>New Password (optional)</label>
+                              <input 
+                                type="password" 
+                                placeholder="Leave blank to keep unchanged"
+                                value={profileForm.password} 
+                                onChange={(e) => setProfileForm({ ...profileForm, password: e.target.value })} 
+                                style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.15)', color: '#fff', fontSize: '14px', boxSizing: 'border-box' }}
+                              />
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                              <button type="submit" disabled={profileSaving} className="dash-btn-primary" style={{ flex: 1 }}>
+                                {profileSaving ? 'Saving...' : 'Save Profile'}
+                              </button>
+                              <button type="button" onClick={() => setIsEditingProfile(false)} className="dash-btn-secondary">
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    )}
+
 
                     <div className="user-overview-grid">
                       <div className="user-overview-card">

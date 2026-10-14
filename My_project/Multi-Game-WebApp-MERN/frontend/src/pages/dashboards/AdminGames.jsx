@@ -24,7 +24,7 @@ const AdminGames = () => {
     
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const response = await axios.get('http://localhost:5000/api/games', config);
+      const response = await axios.get('http://localhost:5000/api/admin/games/all', config);
       setGames(response.data);
     } catch (error) {
       console.error('Error fetching games', error);
@@ -40,6 +40,19 @@ const AdminGames = () => {
   const handleEditClick = (game) => {
     setEditingGame(game);
     setEditForm({ title: game.title, status: game.status });
+  };
+
+  const handleDeleteGame = async (id, title) => {
+    if (!window.confirm(`Are you sure you want to permanently delete "${title}"? This will also remove all its scores and reviews.`)) return;
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.delete(`http://localhost:5000/api/admin/games/${id}`, config);
+      setGames(games.filter(g => g._id !== id));
+    } catch (error) {
+      console.error('Error deleting game', error);
+      alert(error.response?.data?.message || 'Failed to delete game');
+    }
   };
 
   const handleUpdateGame = async (e) => {
@@ -59,6 +72,7 @@ const AdminGames = () => {
       setUpdating(false);
     }
   };
+
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -197,9 +211,18 @@ const AdminGames = () => {
                         </td>
                         <td style={{ color: '#94a3b8' }}>{new Date(game.createdAt).toLocaleDateString()}</td>
                         <td>
-                          <button onClick={() => handleEditClick(game)} className="dash-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }}>
-                            Edit
-                          </button>
+                          <div style={{ display: 'inline-flex', gap: '8px' }}>
+                            <button onClick={() => handleEditClick(game)} className="dash-btn-primary" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                              Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteGame(game._id, game.title)} 
+                              className="dash-btn-secondary" 
+                              style={{ padding: '6px 12px', fontSize: '12px', color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.12)' }}
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))

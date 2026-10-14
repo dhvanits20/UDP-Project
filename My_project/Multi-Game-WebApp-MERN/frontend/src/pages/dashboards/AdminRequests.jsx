@@ -42,8 +42,23 @@ const AdminRequests = () => {
       fetchRequests();
     } catch (error) {
       console.error('Error approving request', error);
+      alert(error.response?.data?.message || 'Failed to approve request');
     }
   };
+
+  const handleReject = async (id) => {
+    if (!window.confirm('Are you sure you want to reject this game submission?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.post(`http://localhost:5000/api/admin/submissions/${id}/reject`, {}, config);
+      fetchRequests();
+    } catch (error) {
+      console.error('Error rejecting request', error);
+      alert(error.response?.data?.message || 'Failed to reject request');
+    }
+  };
+
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -192,14 +207,25 @@ const AdminRequests = () => {
                         </td>
                         <td style={{ color: '#94a3b8' }}>{new Date(req.createdAt).toLocaleDateString()}</td>
                         <td style={{ textAlign: 'right' }}>
-                          {req.status === 'pending' && (
-                            <button 
-                              onClick={() => handleApprove(req._id)}
-                              className="dash-btn-primary"
-                              style={{ padding: '6px 14px', fontSize: '12px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)' }}
-                            >
-                              Approve
-                            </button>
+                          {req.status === 'pending' ? (
+                            <div style={{ display: 'inline-flex', gap: '8px', justifyContent: 'flex-end' }}>
+                              <button 
+                                onClick={() => handleApprove(req._id)}
+                                className="dash-btn-primary"
+                                style={{ padding: '6px 12px', fontSize: '12px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.35)' }}
+                              >
+                                Approve
+                              </button>
+                              <button 
+                                onClick={() => handleReject(req._id)}
+                                className="dash-btn-secondary"
+                                style={{ padding: '6px 12px', fontSize: '12px', color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.12)' }}
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          ) : (
+                            <span style={{ fontSize: '12px', color: '#64748b' }}>Resolved</span>
                           )}
                         </td>
                       </tr>

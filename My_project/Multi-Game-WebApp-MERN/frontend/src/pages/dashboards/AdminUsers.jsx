@@ -34,12 +34,33 @@ const AdminUsers = () => {
     }
   };
 
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+
+  const handleDeleteUser = async (userId, userName) => {
+    if (userId === currentUser._id) {
+      alert("You cannot delete your own active admin account.");
+      return;
+    }
+    if (!window.confirm(`Are you sure you want to delete user "${userName}"? This will permanently remove their profile, scores, and reviews.`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.delete(`http://localhost:5000/api/admin/users/${userId}`, config);
+      setUsers(users.filter(u => u._id !== userId));
+    } catch (error) {
+      console.error('Error deleting user', error);
+      alert(error.response?.data?.message || 'Failed to delete user');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
     window.location.reload();
   };
+
 
   return (
     <div className="dashboard-wrapper">
@@ -144,6 +165,7 @@ const AdminUsers = () => {
                     <th>Email</th>
                     <th>Role</th>
                     <th>Joined Date</th>
+                    <th style={{ textAlign: 'right' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -165,11 +187,24 @@ const AdminUsers = () => {
                           </span>
                         </td>
                         <td style={{ color: '#94a3b8' }}>{new Date(user.createdAt).toLocaleDateString()}</td>
+                        <td style={{ textAlign: 'right' }}>
+                          {user._id !== currentUser._id ? (
+                            <button 
+                              onClick={() => handleDeleteUser(user._id, user.name)}
+                              className="dash-btn-secondary"
+                              style={{ padding: '6px 12px', fontSize: '12px', color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.12)' }}
+                            >
+                              Delete
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: '11px', color: '#64748b' }}>Current User</span>
+                          )}
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="4" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>No users found.</td>
+                      <td colSpan="5" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>No users found.</td>
                     </tr>
                   )}
                 </tbody>
