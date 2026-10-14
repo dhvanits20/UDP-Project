@@ -72,8 +72,35 @@ const DeveloperRegister = () => {
     }
   };
 
+  const inputStyle = {
+    width: '100%',
+    height: '50px',
+    padding: '0 18px',
+    borderRadius: '12px',
+    background: 'rgba(255, 255, 255, 0.05)',
+    border: '1px solid rgba(255, 255, 255, 0.15)',
+    color: '#fff',
+    fontSize: '14px',
+    outline: 'none',
+    transition: 'all 0.2s ease',
+    marginBottom: 0
+  };
+
+  const handleInputFocus = (e) => {
+    e.target.style.borderColor = '#d946ef';
+    e.target.style.boxShadow = '0 0 16px rgba(217, 70, 239, 0.35)';
+    e.target.style.background = 'rgba(255, 255, 255, 0.08)';
+  };
+
+  const handleInputBlur = (e) => {
+    e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+    e.target.style.boxShadow = 'none';
+    e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+  };
+
   return (
     <Layout>
+      {/* Hero Header */}
       <section className="page-top-section set-bg" style={{ backgroundImage: "url('/assets/img/page-top-bg/2.jpg')" }}>
         <div className="page-info">
           <h2>Developer Portal</h2>
@@ -84,59 +111,87 @@ const DeveloperRegister = () => {
         </div>
       </section>
 
-      <section className="contact-page" style={{ padding: '60px 0 80px' }}>
-        <div className="container">
+      {/* Main Content Section */}
+      <section style={{ 
+        position: 'relative', 
+        padding: '60px 0 90px', 
+        minHeight: '800px',
+        overflow: 'hidden' 
+      }}>
+        {/* Ambient Decorative Lighting */}
+        <div style={{
+          position: 'absolute',
+          top: '10%',
+          right: '20%',
+          width: '650px',
+          height: '650px',
+          background: 'radial-gradient(circle, rgba(217, 70, 239, 0.14) 0%, rgba(56, 189, 248, 0.08) 45%, transparent 70%)',
+          filter: 'blur(70px)',
+          pointerEvents: 'none',
+          zIndex: 0
+        }}></div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           {/* Header Banner */}
           <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 40px' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '30px', background: 'rgba(217, 70, 239, 0.15)', border: '1px solid rgba(217, 70, 239, 0.4)', marginBottom: '16px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 18px', borderRadius: '30px', background: 'rgba(217, 70, 239, 0.15)', border: '1px solid rgba(217, 70, 239, 0.4)', marginBottom: '16px' }}>
               <span style={{ fontSize: '14px' }}>⚡</span>
               <span style={{ color: '#f0abfc', fontSize: '13px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                Join the ENDGAME Creator Network
+                ENDGAME Creator Network
               </span>
             </div>
             <h2 style={{ color: '#fff', fontSize: '34px', fontWeight: 900, letterSpacing: '-0.5px', marginBottom: '12px' }}>
               Register as a Game Developer
             </h2>
-            <p style={{ color: '#94a3b8', fontSize: '16px', lineHeight: 1.6 }}>
-              Publish your web games, upload game builds (.zip), track player traffic, and earn platform coin rewards through your dedicated Developer Dashboard.
+            <p style={{ color: '#94a3b8', fontSize: '16px', lineHeight: 1.6, margin: 0 }}>
+              Publish your web games, upload game builds (.zip), track player traffic, and earn platform rewards through your dedicated Developer Dashboard.
             </p>
           </div>
 
           <div className="row justify-content-center">
             {/* Value Props Sidebar */}
             <div className="col-lg-4 col-md-5 mb-4">
-              <div style={{ background: 'rgba(28, 8, 46, 0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(176, 27, 165, 0.3)', borderRadius: '20px', padding: '28px', height: '100%' }}>
-                <h4 style={{ color: '#fff', fontSize: '18px', fontWeight: 800, marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ 
+                background: 'rgba(22, 10, 42, 0.82)', 
+                backdropFilter: 'blur(20px)', 
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(217, 70, 239, 0.28)', 
+                borderRadius: '24px', 
+                padding: '32px 28px', 
+                height: '100%',
+                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6)'
+              }}>
+                <h4 style={{ color: '#fff', fontSize: '18px', fontWeight: 800, marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span>🚀</span> Developer Privileges
                 </h4>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(217, 70, 239, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(217, 70, 239, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0, border: '1px solid rgba(217, 70, 239, 0.3)' }}>
                       📦
                     </div>
                     <div>
                       <h5 style={{ color: '#fff', fontSize: '15px', fontWeight: 700, margin: '0 0 4px' }}>Direct ZIP Game Publishing</h5>
                       <p style={{ color: '#94a3b8', fontSize: '13px', margin: 0, lineHeight: 1.5 }}>
-                        Upload your HTML5, WebGL, or zipped packages with thumbnails and descriptions.
+                        Upload your HTML5, WebGL, or zipped packages with custom thumbnails and descriptions.
                       </p>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(56, 189, 248, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0, border: '1px solid rgba(56, 189, 248, 0.3)' }}>
                       📊
                     </div>
                     <div>
                       <h5 style={{ color: '#fff', fontSize: '15px', fontWeight: 700, margin: '0 0 4px' }}>Creator Analytics</h5>
                       <p style={{ color: '#94a3b8', fontSize: '13px', margin: 0, lineHeight: 1.5 }}>
-                        Monitor review scores, submission status, and player play metrics live.
+                        Monitor review scores, submission status, and real player engagement live.
                       </p>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(251, 191, 36, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(251, 191, 36, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0, border: '1px solid rgba(251, 191, 36, 0.3)' }}>
                       🛡️
                     </div>
                     <div>
@@ -148,8 +203,8 @@ const DeveloperRegister = () => {
                   </div>
                 </div>
 
-                <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                  <span style={{ color: '#cbd5e1', fontSize: '14px' }}>Just want to play games?</span>
+                <div style={{ marginTop: '34px', paddingTop: '22px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  <span style={{ color: '#cbd5e1', fontSize: '13px' }}>Just want to play games?</span>
                   <Link to="/register" style={{ display: 'block', color: '#38bdf8', fontWeight: 700, fontSize: '14px', marginTop: '6px', textDecoration: 'none' }}>
                     Join as a Player instead →
                   </Link>
@@ -159,8 +214,68 @@ const DeveloperRegister = () => {
 
             {/* Registration Form */}
             <div className="col-lg-8 col-md-7">
-              <div style={{ background: 'rgba(28, 8, 46, 0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(176, 27, 165, 0.3)', borderRadius: '20px', padding: '36px' }}>
-                <form className="contact-form" onSubmit={handleSubmit} style={{ margin: 0 }}>
+              <div style={{ 
+                background: 'rgba(22, 10, 42, 0.82)', 
+                backdropFilter: 'blur(20px)', 
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(217, 70, 239, 0.28)', 
+                borderRadius: '24px', 
+                padding: '36px 32px',
+                boxShadow: '0 25px 60px rgba(0, 0, 0, 0.65), 0 0 35px rgba(176, 27, 165, 0.15)'
+              }}>
+                
+                {/* Role Switcher Tabs */}
+                <div style={{
+                  display: 'flex',
+                  background: 'rgba(0, 0, 0, 0.35)',
+                  padding: '5px',
+                  borderRadius: '14px',
+                  marginBottom: '26px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)'
+                }}>
+                  <Link to="/register" style={{
+                    flex: 1,
+                    textAlign: 'center',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    color: '#94a3b8',
+                    fontWeight: 600,
+                    fontSize: '13px',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.background = 'transparent'; }}
+                  >
+                    <span>🎮</span> Player Account
+                  </Link>
+
+                  <div style={{
+                    flex: 1,
+                    textAlign: 'center',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    background: 'linear-gradient(135deg, #b01ba5 0%, #771680 100%)',
+                    color: '#fff',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    letterSpacing: '0.5px',
+                    boxShadow: '0 4px 15px rgba(176, 27, 165, 0.4)',
+                    cursor: 'default',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}>
+                    <span>⚡</span> Developer Studio
+                  </div>
+                </div>
+
+                <form onSubmit={handleSubmit} style={{ margin: 0 }}>
                   <div className="row">
                     {/* Developer Name */}
                     <div className="col-md-6 mb-3">
@@ -174,7 +289,9 @@ const DeveloperRegister = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        style={{ width: '100%', marginBottom: 0 }}
+                        style={inputStyle}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                       />
                     </div>
 
@@ -189,7 +306,9 @@ const DeveloperRegister = () => {
                         name="studio_name"
                         value={formData.studio_name}
                         onChange={handleChange}
-                        style={{ width: '100%', marginBottom: 0 }}
+                        style={inputStyle}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                       />
                     </div>
 
@@ -205,7 +324,9 @@ const DeveloperRegister = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        style={{ width: '100%', marginBottom: 0 }}
+                        style={inputStyle}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                       />
                     </div>
 
@@ -220,7 +341,9 @@ const DeveloperRegister = () => {
                         name="portfolio_url"
                         value={formData.portfolio_url}
                         onChange={handleChange}
-                        style={{ width: '100%', marginBottom: 0 }}
+                        style={inputStyle}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                       />
                     </div>
 
@@ -234,22 +357,17 @@ const DeveloperRegister = () => {
                         value={formData.specialization}
                         onChange={handleChange}
                         style={{ 
-                          width: '100%', 
-                          height: '52px', 
-                          padding: '0 20px', 
-                          borderRadius: '10px', 
-                          background: 'rgba(255, 255, 255, 0.08)', 
-                          border: '1px solid rgba(255, 255, 255, 0.15)', 
-                          color: '#fff', 
-                          fontSize: '14px',
-                          outline: 'none'
+                          ...inputStyle,
+                          cursor: 'pointer'
                         }}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                       >
-                        <option value="HTML5 / JavaScript" style={{ background: '#1c082e' }}>HTML5 / Canvas / Phaser</option>
-                        <option value="Unity WebGL" style={{ background: '#1c082e' }}>Unity WebGL</option>
-                        <option value="Godot Engine" style={{ background: '#1c082e' }}>Godot Engine (HTML5 export)</option>
-                        <option value="Unreal Engine" style={{ background: '#1c082e' }}>Unreal Engine</option>
-                        <option value="Custom Engine" style={{ background: '#1c082e' }}>Custom Engine / WebAssembly</option>
+                        <option value="HTML5 / JavaScript" style={{ background: '#1c082e', color: '#fff' }}>HTML5 / Canvas / Phaser</option>
+                        <option value="Unity WebGL" style={{ background: '#1c082e', color: '#fff' }}>Unity WebGL</option>
+                        <option value="Godot Engine" style={{ background: '#1c082e', color: '#fff' }}>Godot Engine (HTML5 export)</option>
+                        <option value="Unreal Engine" style={{ background: '#1c082e', color: '#fff' }}>Unreal Engine</option>
+                        <option value="Custom Engine" style={{ background: '#1c082e', color: '#fff' }}>Custom Engine / WebAssembly</option>
                       </select>
                     </div>
 
@@ -264,7 +382,9 @@ const DeveloperRegister = () => {
                         name="bio"
                         value={formData.bio}
                         onChange={handleChange}
-                        style={{ width: '100%', marginBottom: 0 }}
+                        style={inputStyle}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                       />
                     </div>
 
@@ -280,7 +400,9 @@ const DeveloperRegister = () => {
                         value={formData.password}
                         onChange={handleChange}
                         required
-                        style={{ width: '100%', marginBottom: 0 }}
+                        style={inputStyle}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                       />
                     </div>
 
@@ -296,14 +418,16 @@ const DeveloperRegister = () => {
                         value={formData.password_confirmation}
                         onChange={handleChange}
                         required
-                        style={{ width: '100%', marginBottom: 0 }}
+                        style={inputStyle}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                       />
                     </div>
 
                     {/* Error display */}
                     {error && (
                       <div className="col-12 mb-3">
-                        <div style={{ padding: '12px 16px', borderRadius: '10px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#fca5a5', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ padding: '12px 16px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#fca5a5', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span>⚠️</span>
                           <span>{error}</span>
                         </div>
@@ -318,17 +442,37 @@ const DeveloperRegister = () => {
                         disabled={loading}
                         style={{ 
                           width: '100%', 
+                          height: '54px',
                           background: 'linear-gradient(135deg, #b01ba5 0%, #771680 100%)',
                           boxShadow: '0 8px 25px rgba(176, 27, 165, 0.4)',
-                          padding: '16px',
-                          fontSize: '16px'
+                          borderRadius: '12px',
+                          border: 'none',
+                          color: '#fff',
+                          fontSize: '15px',
+                          fontWeight: 800,
+                          cursor: loading ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '10px',
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!loading) {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 12px 30px rgba(176, 27, 165, 0.6)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 8px 25px rgba(176, 27, 165, 0.4)';
                         }}
                       >
-                        {loading ? 'Creating Developer Account...' : 'Register as Developer & Launch Dashboard'} 
-                        <img src="/assets/img/icons/double-arrow.png" alt="#" style={{ marginLeft: '10px' }} />
+                        <span>{loading ? 'Creating Developer Account...' : 'Register as Developer & Launch Dashboard'}</span>
+                        <img src="/assets/img/icons/double-arrow.png" alt="#" style={{ width: '12px', height: 'auto' }} />
                       </button>
 
-                      <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                      <div style={{ textAlign: 'center', marginTop: '20px' }}>
                         <span style={{ color: '#94a3b8', fontSize: '14px' }}>Already registered as a developer? </span>
                         <Link to="/login" style={{ color: '#d946ef', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>
                           Sign in to Developer Dashboard
