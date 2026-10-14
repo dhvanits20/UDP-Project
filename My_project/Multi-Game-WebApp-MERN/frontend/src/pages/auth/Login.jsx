@@ -128,7 +128,7 @@ const Login = () => {
               </form>
             </div>
 
-            {/* Right Column: Aesthetic Welcome Back & Community Card */}
+            {/* Right Column: Aesthetic Developer & Studio Hub Showcase Card */}
             <div className="col-lg-6 col-md-12 pl-lg-5">
               <div style={{
                 background: 'linear-gradient(145deg, rgba(32, 10, 52, 0.85) 0%, rgba(18, 6, 33, 0.92) 100%)',
@@ -148,84 +148,82 @@ const Login = () => {
                   right: '-40px',
                   width: '180px',
                   height: '180px',
-                  background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, rgba(217, 70, 239, 0.25) 0%, transparent 70%)',
                   borderRadius: '50%',
                   pointerEvents: 'none'
                 }}></div>
 
                 {/* Badge Header */}
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 14px', borderRadius: '20px', background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.4)', marginBottom: '16px' }}>
-                  <span style={{ fontSize: '13px' }}>🎮</span>
-                  <span style={{ color: '#38bdf8', fontSize: '12px', fontWeight: 800, letterSpacing: '0.8px', textTransform: 'uppercase' }}>
-                    Welcome Back, Player
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 14px', borderRadius: '20px', background: 'rgba(217, 70, 239, 0.15)', border: '1px solid rgba(217, 70, 239, 0.4)', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '13px' }}>⚡</span>
+                  <span style={{ color: '#f0abfc', fontSize: '12px', fontWeight: 800, letterSpacing: '0.8px', textTransform: 'uppercase' }}>
+                    ENDGAME Creator & Studio Hub
                   </span>
                 </div>
 
                 <h3 style={{ color: '#fff', fontSize: '24px', fontWeight: 900, marginBottom: '8px', letterSpacing: '-0.3px' }}>
-                  Ready for Your Next Match?
+                  Build, Publish & Showcase Your Games
                 </h3>
                 <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: 1.6, marginBottom: '24px' }}>
-                  Sign in to resume your games, check your rank on the leaderboard, and spend your earned coin rewards.
+                  Are you a game developer or studio? Log in or create your developer account to access the creator suite.
                 </p>
 
                 {/* Highlights */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '26px' }}>
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(56, 189, 248, 0.2)', border: '1px solid rgba(56, 189, 248, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                      ⚡
+                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(217, 70, 239, 0.2)', border: '1px solid rgba(217, 70, 239, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                      📦
                     </div>
                     <div>
-                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Resume Any Game Instantly</h5>
+                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Direct ZIP & WebGL Publishing</h5>
                       <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0, lineHeight: 1.5 }}>
-                        Jump right back into Tic-Tac-Toe, Chess against AI or local players with synced coin balances.
+                        Upload packaged game builds (.zip), HTML5 bundles, or Unity WebGL with custom cover art and descriptions.
                       </p>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(217, 70, 239, 0.2)', border: '1px solid rgba(217, 70, 239, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                      🛡️
+                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(56, 189, 248, 0.2)', border: '1px solid rgba(56, 189, 248, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                      📊
                     </div>
                     <div>
-                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Personal Dashboard & Stats</h5>
+                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Dedicated Developer Dashboard</h5>
                       <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0, lineHeight: 1.5 }}>
-                        Review your match history, high scores, reviews, and platform achievements.
+                        Track live gameplay metrics, review submissions, and manage your published portfolio in real time.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Developer Switcher Callout Box */}
+                {/* Developer Register CTA Button */}
                 <div style={{
-                  padding: '16px 18px',
+                  padding: '18px 20px',
                   borderRadius: '14px',
-                  background: 'rgba(217, 70, 239, 0.1)',
-                  border: '1px dashed rgba(217, 70, 239, 0.45)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '12px'
+                  background: 'rgba(217, 70, 239, 0.12)',
+                  border: '1px solid rgba(217, 70, 239, 0.4)',
+                  textAlign: 'center'
                 }}>
-                  <div>
-                    <div style={{ color: '#fff', fontSize: '13px', fontWeight: 700 }}>Are you a Game Developer?</div>
-                    <div style={{ color: '#cbd5e1', fontSize: '11px' }}>Access your studio dashboard & game builds</div>
-                  </div>
                   <Link 
                     to="/developer/register" 
                     style={{ 
-                      padding: '8px 14px', 
-                      borderRadius: '8px', 
+                      display: 'block',
+                      width: '100%',
+                      padding: '14px 20px', 
+                      borderRadius: '10px', 
                       background: 'linear-gradient(135deg, #b01ba5 0%, #771680 100%)', 
                       color: '#fff', 
-                      fontSize: '12px', 
+                      fontSize: '14px', 
                       fontWeight: 800, 
                       textDecoration: 'none',
-                      whiteSpace: 'nowrap',
-                      boxShadow: '0 4px 12px rgba(176, 27, 165, 0.4)'
+                      boxShadow: '0 6px 20px rgba(176, 27, 165, 0.5)',
+                      letterSpacing: '0.5px'
                     }}
                   >
-                    Dev Hub →
+                    🚀 Register as Game Developer & Studio →
                   </Link>
+                  <p style={{ color: '#94a3b8', fontSize: '12px', margin: '10px 0 0' }}>
+                    Instant access to submission portal & creator dashboard
+                  </p>
                 </div>
               </div>
             </div>

@@ -148,7 +148,7 @@ const Register = () => {
               </form>
             </div>
 
-            {/* Right Column: Aesthetic Platform Perks & Showcase Card */}
+            {/* Right Column: Aesthetic Developer & Studio Hub Showcase Card */}
             <div className="col-lg-6 col-md-12 pl-lg-5">
               <div style={{
                 background: 'linear-gradient(145deg, rgba(32, 10, 52, 0.85) 0%, rgba(18, 6, 33, 0.92) 100%)',
@@ -175,59 +175,59 @@ const Register = () => {
 
                 {/* Badge Header */}
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 14px', borderRadius: '20px', background: 'rgba(217, 70, 239, 0.15)', border: '1px solid rgba(217, 70, 239, 0.4)', marginBottom: '16px' }}>
-                  <span style={{ fontSize: '13px' }}>✨</span>
+                  <span style={{ fontSize: '13px' }}>⚡</span>
                   <span style={{ color: '#f0abfc', fontSize: '12px', fontWeight: 800, letterSpacing: '0.8px', textTransform: 'uppercase' }}>
-                    ENDGAME Player Pass
+                    ENDGAME Creator & Studio Hub
                   </span>
                 </div>
 
                 <h3 style={{ color: '#fff', fontSize: '24px', fontWeight: 900, marginBottom: '8px', letterSpacing: '-0.3px' }}>
-                  Level Up Your Gaming Experience
+                  Build, Publish & Showcase Your Games
                 </h3>
                 <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: 1.6, marginBottom: '24px' }}>
-                  Create your free account today and unlock full access to the ENDGAME ecosystem.
+                  Join our creator network to distribute your HTML5, WebGL, and custom engine games directly to thousands of active players.
                 </p>
 
-                {/* Feature Points */}
+                {/* Developer Feature Points */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '26px' }}>
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
                     <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(217, 70, 239, 0.2)', border: '1px solid rgba(217, 70, 239, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                      🎮
+                      📦
                     </div>
                     <div>
-                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Instant Browser Gaming</h5>
+                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Direct ZIP & WebGL Publishing</h5>
                       <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0, lineHeight: 1.5 }}>
-                        Zero downloads, zero waiting. Jump into Chess, Tic-Tac-Toe, and community titles directly.
+                        Upload packaged game builds (.zip), HTML5 bundles, or Unity WebGL with custom cover art and descriptions.
                       </p>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
                     <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(56, 189, 248, 0.2)', border: '1px solid rgba(56, 189, 248, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                      🏆
+                      📊
                     </div>
                     <div>
-                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Live Global Leaderboards</h5>
+                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Dedicated Developer Dashboard</h5>
                       <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0, lineHeight: 1.5 }}>
-                        Submit high scores on victories and compete against top players worldwide.
+                        Track live gameplay metrics, review submissions, and manage your published portfolio in real time.
                       </p>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
                     <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(251, 191, 36, 0.2)', border: '1px solid rgba(251, 191, 36, 0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                      🪙
+                      🛡️
                     </div>
                     <div>
-                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Coin Rewards & Profile Ranks</h5>
+                      <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, margin: '0 0 2px' }}>Verified Ownership & Royalties</h5>
                       <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0, lineHeight: 1.5 }}>
-                        Earn platform coins for every win, track gameplay history, and level up your player profile.
+                        Your studio retains 100% intellectual property, verified developer credits, and player engagement ratings.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Mini Stat Badges */}
+                {/* Developer Spec / Stat Badges */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -238,52 +238,50 @@ const Register = () => {
                   marginBottom: '22px'
                 }}>
                   <div style={{ textAlign: 'center', flex: 1 }}>
-                    <div style={{ color: '#d946ef', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>100%</div>
-                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Free to Play</div>
+                    <div style={{ color: '#d946ef', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>HTML5/WebGL</div>
+                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>All Engines</div>
                   </div>
                   <div style={{ width: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
                   <div style={{ textAlign: 'center', flex: 1 }}>
-                    <div style={{ color: '#38bdf8', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>INSTANT</div>
-                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Matchmaking</div>
+                    <div style={{ color: '#38bdf8', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>0% FEES</div>
+                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Free Publishing</div>
                   </div>
                   <div style={{ width: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
                   <div style={{ textAlign: 'center', flex: 1 }}>
-                    <div style={{ color: '#4ade80', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>SECURE</div>
-                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Player Data</div>
+                    <div style={{ color: '#4ade80', fontWeight: 900, fontSize: '15px', fontFamily: "'Orbitron', sans-serif" }}>REAL-TIME</div>
+                    <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Live Analytics</div>
                   </div>
                 </div>
 
-                {/* Developer Switcher Callout Box */}
+                {/* Developer Register CTA Button */}
                 <div style={{
-                  padding: '16px 18px',
+                  padding: '18px 20px',
                   borderRadius: '14px',
-                  background: 'rgba(217, 70, 239, 0.1)',
-                  border: '1px dashed rgba(217, 70, 239, 0.45)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '12px'
+                  background: 'rgba(217, 70, 239, 0.12)',
+                  border: '1px solid rgba(217, 70, 239, 0.4)',
+                  textAlign: 'center'
                 }}>
-                  <div>
-                    <div style={{ color: '#fff', fontSize: '13px', fontWeight: 700 }}>Are you a Game Developer?</div>
-                    <div style={{ color: '#cbd5e1', fontSize: '11px' }}>Publish WebGL games & monitor analytics</div>
-                  </div>
                   <Link 
                     to="/developer/register" 
                     style={{ 
-                      padding: '8px 14px', 
-                      borderRadius: '8px', 
+                      display: 'block',
+                      width: '100%',
+                      padding: '14px 20px', 
+                      borderRadius: '10px', 
                       background: 'linear-gradient(135deg, #b01ba5 0%, #771680 100%)', 
                       color: '#fff', 
-                      fontSize: '12px', 
+                      fontSize: '14px', 
                       fontWeight: 800, 
                       textDecoration: 'none',
-                      whiteSpace: 'nowrap',
-                      boxShadow: '0 4px 12px rgba(176, 27, 165, 0.4)'
+                      boxShadow: '0 6px 20px rgba(176, 27, 165, 0.5)',
+                      letterSpacing: '0.5px'
                     }}
                   >
-                    Dev Portal →
+                    🚀 Register as Game Developer & Studio →
                   </Link>
+                  <p style={{ color: '#94a3b8', fontSize: '12px', margin: '10px 0 0' }}>
+                    Instant access to submission portal & creator dashboard
+                  </p>
                 </div>
               </div>
             </div>
