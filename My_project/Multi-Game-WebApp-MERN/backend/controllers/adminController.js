@@ -66,6 +66,9 @@ const approveSubmission = async (req, res) => {
       submission.status = 'approved';
       await submission.save();
 
+      // Find developer user if registered
+      const devUser = await User.findOne({ email: submission.developer_email?.trim().toLowerCase() });
+
       // Create the game
       await Game.create({
         title: submission.title,
@@ -73,6 +76,8 @@ const approveSubmission = async (req, res) => {
         description: submission.description,
         image_url: submission.image_url,
         game_file: submission.game_file,
+        developer_id: devUser ? devUser._id : undefined,
+        developer_email: submission.developer_email,
         status: 'public'
       });
 

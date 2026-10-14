@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Chess } from 'chess.js';
+import axios from 'axios';
 import Layout from '../../components/Layout';
 import { useGameLimit } from '../../hooks/useGameLimit';
 import './ChessGame.css';
@@ -26,6 +27,23 @@ const ChessGame = () => {
   const [showPromoModal, setShowPromoModal] = useState(false);
   const [pendingPromotion, setPendingPromotion] = useState(null);
   const { checkLimitAndIncrement } = useGameLimit();
+  const hasScoredRef = useRef(false);
+
+  const recordScore = async (points) => {
+    const token = localStorage.getItem('token');
+    if (!token || points <= 0 || hasScoredRef.current) return;
+    hasScoredRef.current = true;
+    try {
+      await axios.post('http://localhost:5000/api/scores', {
+        game_title: 'Chess',
+        score: points
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } catch (err) {
+      console.warn('Could not record chess score:', err.message);
+    }
+  };
 
   useEffect(() => {
     updateStatus();
@@ -35,6 +53,7 @@ const ChessGame = () => {
   const startGame = (mode) => {
     if (!checkLimitAndIncrement()) return;
 
+    hasScoredRef.current = false;
     setGameMode(mode);
     const newGame = new Chess();
     setGame(newGame);
@@ -57,11 +76,23 @@ const ChessGame = () => {
       setWinReason('Checkmate');
       setGameOver(true);
       setStatus(`Checkmate! ${winner} wins! 🎉`);
+
+      const userColorName = playerColor === 'w' ? 'White' : 'Black';
+      let earnedPoints = 0;
+      if (gameMode === 'pvc') {
+        earnedPoints = winner === userColorName ? 250 : 0;
+      } else {
+        earnedPoints = 150;
+      }
+      if (earnedPoints > 0) {
+        recordScore(earnedPoints);
+      }
     } else if (currentGame.isDraw() || currentGame.isStalemate() || currentGame.isThreefoldRepetition()) {
       setWinnerTitle('Draw!');
       setWinReason('Draw');
       setGameOver(true);
       setStatus('Game Over - Draw');
+      recordScore(50);
     } else {
       setStatus(`${currentGame.turn() === 'w' ? 'White' : 'Black'}'s Turn${currentGame.isCheck() ? ' (In Check!)' : ''}`);
     }

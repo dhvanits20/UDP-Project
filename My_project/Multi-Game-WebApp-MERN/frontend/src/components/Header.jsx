@@ -30,6 +30,7 @@ const Header = () => {
               <li><Link to="/reviews">Reviews</Link></li>
               <li><Link to="/news">News</Link></li>
               <li><Link to="/contact">Contact</Link></li>
+              <li><Link to="/developer/register" style={{ color: '#d946ef', fontWeight: 'bold' }}>Dev Portal</Link></li>
             </ul>
             <div className="user-panel d-flex align-items-center">
               {localStorage.getItem('token') ? (

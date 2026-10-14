@@ -6,8 +6,17 @@ const User = require('../models/User');
 const getDeveloperDashboard = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    const myGames = await Game.find({ developer_id: req.user._id });
-    const mySubmissions = await GameSubmission.find({ developer_email: user.email }); // Simplified match
+    if (!user) {
+      return res.status(404).json({ message: 'Developer not found' });
+    }
+    const myGames = await Game.find({
+      $or: [
+        { developer_id: req.user._id },
+        { developer_email: user.email }
+      ]
+    }).populate('category_id', 'name');
+
+    const mySubmissions = await GameSubmission.find({ developer_email: user.email }).populate('category_id', 'name').sort({ createdAt: -1 });
     
     const totalGames = myGames.length;
     const pendingSubmissions = mySubmissions.filter(s => s.status === 'pending').length;
@@ -22,6 +31,7 @@ const getDeveloperDashboard = async (req, res) => {
       mySubmissions
     });
   } catch (error) {
+    console.error('Developer dashboard error:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 };

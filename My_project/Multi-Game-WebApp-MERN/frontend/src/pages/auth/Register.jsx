@@ -73,8 +73,27 @@ const Register = () => {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <div className="section-title text-white">
-                <h2>Create a new account</h2>
+              <div className="section-title text-white d-flex flex-wrap justify-content-between align-items-center" style={{ marginBottom: '30px' }}>
+                <h2 style={{ margin: 0 }}>Create a new account</h2>
+                <Link 
+                  to="/developer/register" 
+                  style={{ 
+                    padding: '8px 18px', 
+                    borderRadius: '25px', 
+                    background: 'rgba(217, 70, 239, 0.15)', 
+                    border: '1px solid rgba(217, 70, 239, 0.4)', 
+                    color: '#f0abfc', 
+                    textDecoration: 'none', 
+                    fontSize: '13px', 
+                    fontWeight: 700, 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    gap: '6px' 
+                  }}
+                >
+                  <span>🎮 Are you a Game Developer?</span>
+                  <span style={{ color: '#fff' }}>Register Here →</span>
+                </Link>
               </div>
               <form className="contact-form" onSubmit={handleSubmit}>
                 <div className="row">
@@ -135,9 +154,14 @@ const Register = () => {
                     <button className="site-btn" type="submit" disabled={loading}>
                       {loading ? 'Registering...' : 'Register'} <img src="/assets/img/icons/double-arrow.png" alt="#" />
                     </button>
-                    <div className="mt-3">
-                      <span className="text-white">Already have an account? </span>
-                      <Link to="/login" className="text-primary font-weight-bold">Login here</Link>
+                    <div className="mt-3 d-flex flex-wrap justify-content-between align-items-center">
+                      <div>
+                        <span className="text-white">Already have an account? </span>
+                        <Link to="/login" className="text-primary font-weight-bold">Login here</Link>
+                      </div>
+                      <Link to="/developer/register" style={{ color: '#d946ef', fontSize: '13px', fontWeight: 700, textDecoration: 'none' }}>
+                        Register as Game Developer / Studio →
+                      </Link>
                     </div>
                   </div>
                 </div>

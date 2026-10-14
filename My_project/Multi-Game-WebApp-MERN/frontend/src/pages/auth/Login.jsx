@@ -111,9 +111,17 @@ const Login = () => {
                     <button className="site-btn" type="submit" disabled={loading}>
                       {loading ? 'Logging in...' : 'Login'} <img src="/assets/img/icons/double-arrow.png" alt="#" />
                     </button>
-                    <Link className="btn btn-link text-white ml-3" to="/forgot-password">
-                      Forgot Your Password?
-                    </Link>
+                    <div className="mt-3 d-flex flex-wrap align-items-center gap-3">
+                      <div>
+                        <span className="text-white">New Player? </span>
+                        <Link to="/register" className="text-primary font-weight-bold">Create Account</Link>
+                      </div>
+                      <span className="text-white d-none d-md-inline">|</span>
+                      <div>
+                        <span className="text-white">Game Creator? </span>
+                        <Link to="/developer/register" style={{ color: '#d946ef', fontWeight: 700 }}>Developer Portal →</Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </form>

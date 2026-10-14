@@ -10,10 +10,11 @@ import News from './pages/News';
 import Contact from './pages/Contact';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import DeveloperRegister from './pages/auth/DeveloperRegister';
 import UserDashboard from './pages/dashboards/UserDashboard';
 import DeveloperDashboard from './pages/dashboards/DeveloperDashboard';
-import AdminDashboard from './pages/dashboards/AdminDashboard';
 import SubmitGame from './pages/dashboards/SubmitGame';
+import AdminDashboard from './pages/dashboards/AdminDashboard';
 import AdminGames from './pages/dashboards/AdminGames';
 import AdminRequests from './pages/dashboards/AdminRequests';
 import AdminUsers from './pages/dashboards/AdminUsers';
@@ -33,6 +34,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/developer/register" element={<DeveloperRegister />} />
         <Route path="/user/dashboard" element={<UserDashboard />} />
         
         <Route path="/developer/dashboard" element={<DeveloperDashboard />} />

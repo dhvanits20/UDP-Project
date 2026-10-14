@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import Layout from '../../components/Layout';
 import { useGameLimit } from '../../hooks/useGameLimit';
 import './TicTacToe.css';
@@ -16,6 +17,21 @@ const TicTacToe = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const { checkLimitAndIncrement } = useGameLimit();
+
+  const recordScore = async (points) => {
+    const token = localStorage.getItem('token');
+    if (!token || points <= 0) return;
+    try {
+      await axios.post('http://localhost:5000/api/scores', {
+        game_title: 'Tic Tac Toe',
+        score: points
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } catch (err) {
+      console.warn('Could not record score:', err.message);
+    }
+  };
 
   const winningCombinations = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -54,8 +70,24 @@ const TicTacToe = () => {
       setWinner(winResult.winner);
       setWinningLine(winResult.line);
       setGameActive(false);
+
+      let earnedPoints = 0;
+      if (gameMode === 'pvc') {
+        earnedPoints = winResult.winner === 'X' ? 100 : 0;
+      } else {
+        earnedPoints = 75;
+      }
+
+      if (earnedPoints > 0) {
+        recordScore(earnedPoints);
+      }
+
       setTimeout(() => {
-        setModalMessage(`Player ${winResult.winner} Wins! 🎉`);
+        setModalMessage(
+          earnedPoints > 0
+            ? `Player ${winResult.winner} Wins! 🎉 (+${earnedPoints} XP & ${Math.floor(earnedPoints / 10)} Coins)`
+            : `Computer Wins! Better luck next round! 🤖`
+        );
         setShowModal(true);
         if (winResult.winner === 'X') setScoreX(prev => prev + 1);
         else setScoreO(prev => prev + 1);
@@ -65,8 +97,10 @@ const TicTacToe = () => {
 
     if (!newBoard.includes('')) {
       setGameActive(false);
+      const drawPoints = 25;
+      recordScore(drawPoints);
       setTimeout(() => {
-        setModalMessage("It's a Draw! 🤝");
+        setModalMessage(`It's a Draw! 🤝 (+${drawPoints} XP & 2 Coins)`);
         setShowModal(true);
       }, 500);
       return;

@@ -1,5 +1,5 @@
 const Contact = require('../models/Contact');
-const { sendContactEmail, sendReplyEmail } = require('../utils/sendEmail');
+const { sendContactEmail, sendReplyEmail, sendContactConfirmationEmail } = require('../utils/sendEmail');
 
 // Submit a contact message
 const submitContact = async (req, res) => {
@@ -44,9 +44,16 @@ const submitContact = async (req, res) => {
       // Message is still saved in DB even if SMTP fails
     }
 
+    // Automatically send acknowledgment receipt to inquirer
+    try {
+      await sendContactConfirmationEmail(cleanData);
+    } catch (ackError) {
+      console.warn('Failed to send acknowledgment email to user:', ackError.message);
+    }
+
     res.status(201).json({
       success: true,
-      message: 'Your message has been sent successfully! We will get back to you shortly.',
+      message: 'Your message has been sent successfully! A confirmation email has been sent to your inbox.',
       previewUrl: emailResult?.previewUrl || null
     });
   } catch (error) {

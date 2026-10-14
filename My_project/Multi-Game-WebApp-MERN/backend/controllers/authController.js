@@ -11,9 +11,13 @@ const isValidEmail = (email) => {
   return emailRegex.test(String(email).trim());
 };
 
-// Register User
+// Register User (Player or Developer)
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role, studio_name, portfolio_url, specialization, bio } = req.body;
+
+  if (!name || !name.trim()) {
+    return res.status(400).json({ message: 'Name is required' });
+  }
 
   if (!email || !isValidEmail(email)) {
     return res.status(400).json({ message: 'Please provide a valid email address' });
@@ -26,16 +30,31 @@ const registerUser = async (req, res) => {
   const normalizedEmail = email.trim().toLowerCase();
   const userExists = await User.findOne({ email: normalizedEmail });
   if (userExists) {
-    return res.status(400).json({ message: 'User already exists' });
+    return res.status(400).json({ message: 'An account with this email already exists' });
   }
 
-  const user = await User.create({ name, email: normalizedEmail, password });
+  const requestedRole = (role === 'developer') ? 'developer' : 'player';
+
+  const user = await User.create({
+    name: name.trim(),
+    email: normalizedEmail,
+    password,
+    role: requestedRole,
+    studio_name: studio_name?.trim() || undefined,
+    portfolio_url: portfolio_url?.trim() || undefined,
+    specialization: specialization?.trim() || undefined,
+    bio: bio?.trim() || undefined
+  });
+
   if (user) {
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
+      studio_name: user.studio_name,
+      portfolio_url: user.portfolio_url,
+      specialization: user.specialization,
       token: generateToken(user._id)
     });
   } else {

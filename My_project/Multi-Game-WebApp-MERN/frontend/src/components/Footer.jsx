@@ -24,8 +24,9 @@ const Footer = () => {
           <li><Link to="/">Home</Link></li>
           <li><Link to="/games">Games</Link></li>
           <li><Link to="/reviews">Reviews</Link></li>
-          <li><Link to="/blog">News</Link></li>
+          <li><Link to="/news">News</Link></li>
           <li><Link to="/contact">Contact</Link></li>
+          <li><Link to="/developer/register" style={{ color: '#d946ef', fontWeight: 700 }}>Developers</Link></li>
         </ul>
         <div className="footer-social d-flex justify-content-center">
           <a href="#"><i className="fa fa-pinterest"></i></a>

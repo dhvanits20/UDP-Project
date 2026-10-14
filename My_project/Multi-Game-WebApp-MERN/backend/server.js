@@ -28,6 +28,7 @@ const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const developerRoutes = require('./routes/developerRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const scoreRoutes = require('./routes/scoreRoutes');
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -36,6 +37,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/developer', developerRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/scores', scoreRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running...');

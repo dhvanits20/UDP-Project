@@ -6,6 +6,8 @@ const GameSchema = new mongoose.Schema({
   description: { type: String },
   image_url: { type: String },
   game_file: { type: String },
+  developer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  developer_email: { type: String },
   status: { type: String, enum: ['public', 'private', 'pending', 'rejected'], default: 'public' }
 }, { timestamps: true });
 

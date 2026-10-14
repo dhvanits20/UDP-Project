@@ -198,4 +198,92 @@ const sendReplyEmail = async ({ to, toName, subject, replyMessage, originalMessa
   return { success: true, messageId: info.messageId };
 };
 
-module.exports = { sendContactEmail, sendReplyEmail };
+/**
+ * Sends an automatic confirmation/receipt email to the person who submitted the inquiry
+ */
+const sendContactConfirmationEmail = async ({ name, email, subject, message }) => {
+  const transporter = await getTransporter();
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Thank You for Contacting ENDGAME</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1e293b; margin: 0; padding: 20px; background-color: #0f0728; }
+        .card { max-width: 600px; margin: 0 auto; background: #1a0b36; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(217, 70, 239, 0.3); color: #e2e8f0; }
+        .card-header { background: linear-gradient(135deg, #b01ba5 0%, #771680 100%); padding: 30px 24px; text-align: center; }
+        .card-header h1 { margin: 0; font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: 1px; font-family: 'Orbitron', sans-serif, sans-serif; }
+        .card-header p { margin: 8px 0 0; color: #fdf4ff; font-size: 14px; opacity: 0.9; }
+        .card-body { padding: 28px 24px; }
+        .greeting { font-size: 16px; font-weight: 600; color: #f8fafc; margin-top: 0; }
+        .intro-text { font-size: 14px; color: #cbd5e1; line-height: 1.7; margin-bottom: 20px; }
+        .summary-box { background: rgba(255, 255, 255, 0.04); border-left: 4px solid #d946ef; border-radius: 8px; padding: 16px; margin: 20px 0; }
+        .summary-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #d946ef; font-weight: 700; margin-bottom: 6px; }
+        .summary-subject { font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+        .summary-message { font-size: 13px; color: #94a3b8; font-style: italic; white-space: pre-wrap; line-height: 1.5; }
+        .btn-container { text-align: center; margin: 28px 0 16px; }
+        .action-btn { display: inline-block; background: linear-gradient(90deg, #d946ef, #8b5cf6); color: #ffffff !important; text-decoration: none; padding: 12px 28px; border-radius: 30px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 15px rgba(217, 70, 239, 0.4); }
+        .footer { padding: 20px 24px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 12px; color: #64748b; text-align: center; }
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <div class="card-header">
+          <h1>🎮 ENDGAME GAMING</h1>
+          <p>Inquiry Receipt Confirmation</p>
+        </div>
+        <div class="card-body">
+          <p class="greeting">Hello ${name},</p>
+          <p class="intro-text">
+            Thank you for reaching out to <strong>ENDGAME</strong>. We have successfully received your message, and our administrative & support team is reviewing it. We usually respond within 24-48 hours.
+          </p>
+
+          <div class="summary-box">
+            <div class="summary-title">Summary of Your Inquiry</div>
+            <div class="summary-subject">Subject: ${subject}</div>
+            <div class="summary-message">"${message}"</div>
+          </div>
+
+          <p class="intro-text" style="margin-bottom: 10px;">
+            In the meantime, feel free to explore our games, participate in tournaments, or browse our developer portal!
+          </p>
+
+          <div class="btn-container">
+            <a href="http://localhost:5173/games" class="action-btn">Explore Games Now</a>
+          </div>
+        </div>
+        <div class="footer">
+          © ${new Date().getFullYear()} ENDGAME Gaming Inc. All rights reserved.<br>
+          Sent automatically from our contact portal.
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  if (!transporter) {
+    console.log(`[ACKNOWLEDGMENT SIMULATED] To: ${email}, Subject: Acknowledgment - ${subject}`);
+    return { success: true, simulated: true };
+  }
+
+  const mailOptions = {
+    from: `"ENDGAME Platform" <${process.env.SMTP_USER || 'no-reply@endgame.com'}>`,
+    to: email,
+    subject: `We've received your message: "${subject}" - ENDGAME`,
+    html: htmlContent,
+    text: `Hello ${name},\n\nThank you for reaching out to ENDGAME. We have received your message regarding "${subject}". Our team will get back to you shortly.\n\nBest regards,\nENDGAME Support`
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Acknowledgment email dispatched to user:', email, 'ID:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (err) {
+    console.warn('Could not dispatch acknowledgment email to inquirer:', err.message);
+    return { success: false, error: err.message };
+  }
+};
+
+module.exports = { sendContactEmail, sendReplyEmail, sendContactConfirmationEmail };
